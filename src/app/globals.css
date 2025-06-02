@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @tailwind utilities;
-@import "../css/multi-select.css";
+@import "../style/css/multi-select.css";
 
 @theme {
   --color-blue-500: #262322;
