@@ -1,3 +1,4 @@
+import { PropsWithChildren } from "react";
 import "./globals.css";
 
 
@@ -6,7 +7,7 @@ export const metadata = {
   description: "An app for managing music tracks",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: PropsWithChildren<{}>) {
   return (
     <html lang="en">
       <body className={``}>

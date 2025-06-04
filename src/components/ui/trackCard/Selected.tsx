@@ -2,7 +2,12 @@ import useSelectedStore from "@/store/selectedStore";
 import { CheckCircleIcon, StopIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 
-export default function Selected({ id, isSelected }) {
+type SelectedProps = {
+  id: string
+  isSelected: boolean
+}
+
+export default function Selected({ id, isSelected }: SelectedProps) {
   const selected = useSelectedStore((state) => state.selected);
   const setSelected = useSelectedStore((state) => state.setSelected);
   const onSelect = () => {

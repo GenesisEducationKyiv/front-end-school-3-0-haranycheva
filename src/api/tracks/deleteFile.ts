@@ -1,6 +1,12 @@
 import axios from "../axiosSets";
+import { ok, err } from "neverthrow";
+import type { ApiResult, Track } from "@/types";
 
-export const deleteFile = async (id) => {
-        const res = await axios.delete(`tracks/${id}/file`)
-        return res.data
+export const deleteFile = async (id: string): ApiResult<Track> => {
+  try {
+    const res = await axios.delete<Track>(`tracks/${id}/file`);
+    return ok(res.data);
+  } catch (error: any) {
+    return err(error);
+  }
 };

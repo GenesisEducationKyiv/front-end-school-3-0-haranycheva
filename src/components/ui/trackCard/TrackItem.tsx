@@ -1,16 +1,27 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import ButtonList from "./ButtonList";
-import { useEffect, useState } from "react";
-import AudioPlayer from "./AudioPlayer";
-import { getFile } from "@/api/tracks/getFile";
-import Selected from "./Selected";
-import useSelectedStore from "@/store/selectedStore";
+import Image from 'next/image';
+import ButtonList from './ButtonList';
+import { useEffect, useState } from 'react';
+import AudioPlayer from './AudioPlayer';
+import { getFile } from '@/api/tracks/getFile';
+import Selected from './Selected';
+import useSelectedStore from '@/store/selectedStore';
+import { Track } from '@/types';
 
-export default function TrackItem({ track, playing, setIsPlaying }) {
+interface TrackItemProps {
+  track: Track;
+  playing: string | null;
+  setIsPlaying: (id: string | null) => void;
+}
+
+export default function TrackItem({
+  track,
+  playing,
+  setIsPlaying,
+}: TrackItemProps) {
   const isPlaying = playing === track.id;
-  const [fileSrc, setFileSrc] = useState(null);
+  const [fileSrc, setFileSrc] = useState<string | undefined>(undefined);
   const selected = useSelectedStore((state) => state.selected);
   const ableSelect = useSelectedStore((state) => state.ableSelect);
   const [isSelected, setIsSelected] = useState(
@@ -21,35 +32,39 @@ export default function TrackItem({ track, playing, setIsPlaying }) {
     setIsSelected(selected.some((el) => el === track.id));
   }, [selected, track.id]);
 
-  useEffect(() => {
-    if (track?.audioFile) {
-      async function fetchData() {
-        const data = await getFile(track.id, track.audioFile);
-        setFileSrc(data);
-      }
-      fetchData();
-    } else {
-      setFileSrc(null);
-    }
-  }, [track?.audioFile]);
+useEffect(() => {
+  if (!track?.audioFile) {
+    setFileSrc(undefined);
+    return;
+  }
+
+  async function fetchData() {
+    const data = await getFile(track.id, track.audioFile!);
+    setFileSrc(data || undefined);
+  }
+
+  fetchData();
+}, [track?.audioFile, track.id]);
+
 
   return (
     <li
       className={`${
-        isSelected ? "bg-blue-400" : "bg-blue-500"
+        isSelected ? 'bg-blue-400' : 'bg-blue-500'
       }  relative px-4 list-none reex flex-col pt-4 rounded-[10px] hover:bg-blue-400 ransition-colors duration-200 parent`}
       data-testid={`track-item-${track.id}`}
     >
-      {ableSelect && <Selected
-        isSelected={isSelected}
-        setIsSelected={setIsSelected}
-        id={track.id}
-      />}
+      {ableSelect && (
+        <Selected
+          isSelected={isSelected}
+          id={track.id}
+        />
+      )}
       <div className="mb-2 relative">
         <Image
-          src={track.coverImage || "/no-image.jpg"}
+          src={track.coverImage || '/no-image.jpg'}
           placeholder="blur"
-          blurDataURL={track.coverImage || "/no-image.jpg"}
+          blurDataURL={track.coverImage || '/no-image.jpg'}
           alt="Track cover"
           width={200}
           height={200}

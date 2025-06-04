@@ -7,7 +7,11 @@ import {
 } from "@heroicons/react/24/outline";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function Pagination({ maxPage }) {
+type PaginationProps = {
+  maxPage: number;
+};
+
+export default function Pagination({ maxPage } : PaginationProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

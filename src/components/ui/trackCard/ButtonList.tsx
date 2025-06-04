@@ -1,13 +1,19 @@
 "use client";
 
 import useModalStore from "@/store/modalStore";
+import { AudioInfo, Track } from "@/types";
 import {
   ArrowUpTrayIcon,
   TrashIcon,
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 
-export default function ButtonList({ track, audioFile }) {
+type ButtonListProps = {
+  track: Track;
+  audioFile: string | undefined
+}
+
+export default function ButtonList({ track, audioFile } : ButtonListProps) {
   const openModal = useModalStore((state) => state.openModal);
 
   const handleDelete = () => {

@@ -2,8 +2,15 @@ import { useRef, useState, useEffect } from "react";
 import { PlayCircleIcon } from "@heroicons/react/24/outline";
 import { PauseCircleIcon } from "@heroicons/react/24/outline";
 
-const AudioPlayer = ({ id, src, isPlaying, setIsPlaying }) => {
-  const audioRef = useRef(null);
+interface AudioPlayerProps {
+  id: string;
+  src: string | undefined;
+  isPlaying: boolean;
+  setIsPlaying: (id: string | null) => void;
+}
+
+const AudioPlayer = ({ id, src, isPlaying, setIsPlaying }: AudioPlayerProps) => {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -24,19 +31,25 @@ const AudioPlayer = ({ id, src, isPlaying, setIsPlaying }) => {
     } else {
       audio.pause();
     }
-  }, [isPlaying]);
+  }, [isPlaying, id]);
 
   const handleTimeUpdate = () => {
-    setCurrentTime(audioRef.current.currentTime);
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+    }
   };
 
   const handleLoadedMetadata = () => {
-    setDuration(audioRef.current.duration);
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
+    }
   };
 
-  const handleSeek = (e) => {
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = parseFloat(e.target.value);
-    audioRef.current.currentTime = newTime;
+    if (audioRef.current) {
+      audioRef.current.currentTime = newTime;
+    }
     setCurrentTime(newTime);
   };
 
@@ -44,7 +57,7 @@ const AudioPlayer = ({ id, src, isPlaying, setIsPlaying }) => {
     <div className="flex items-center gap-4 w-full max-w-md">
       {isPlaying ? (
         <button
-          className={`${!src || "cursor-pointer"}`}
+          className={`${src ? "cursor-pointer" : ""}`}
           disabled={!src}
           onClick={togglePlay}
           data-testid={`pause-button-${id}`}
@@ -53,24 +66,24 @@ const AudioPlayer = ({ id, src, isPlaying, setIsPlaying }) => {
         </button>
       ) : (
         <button
-          className={`${!src || "cursor-pointer"}`}
+          className={`${src ? "cursor-pointer" : ""}`}
           disabled={!src}
           onClick={togglePlay}
           data-testid={`play-button-${id}`}
         >
           <PlayCircleIcon className="h-6 w-6 text-almond" />
         </button>
-      )}    
+      )}
       <input
         type="range"
         min="0"
-        disabled={!src}
         max={duration}
-        value={!src ? 0 : currentTime}
+        value={src ? currentTime : 0}
         onChange={handleSeek}
         step="0.1"
+        disabled={!src}
         className="flex-grow accent-player"
-        data-testid={`audio-progress-{id}`}
+        data-testid={`audio-progress-${id}`}
       />
       <audio
         ref={audioRef}

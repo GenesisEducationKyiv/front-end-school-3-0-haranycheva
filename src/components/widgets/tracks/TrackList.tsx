@@ -7,7 +7,7 @@ import LoadingList from "./loadings/LoadingList";
 
 export default function TrackList() {
   const list = useTrackStore((state) => state.tracks);
-  const [isPlaying, setIsPlaying] = useState(null);
+const [isPlaying, setIsPlaying] = useState<string | null>(null);;
   const loading = useTrackStore((state) => state.loading);
   return loading ? (
     <LoadingList />

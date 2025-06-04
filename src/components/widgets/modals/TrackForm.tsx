@@ -6,19 +6,29 @@ import { Controller } from 'react-hook-form';
 import Select from 'react-select';
 import { useTrackFormSets } from '@/hooks/useTrackFormSets';
 import { useGenres } from '@/hooks/useGenres';
+import { DefaultsProps, FormType } from '@/types';
+import { getErrorMessage } from '@/helpers/getErrorMessage';
 
-export default function TrackForm({ type, defaults }) {
+type TrackFormProps = {
+  type: FormType;
+};
+
+export default function TrackForm({
+  type,
+  defaults,
+}: DefaultsProps<TrackFormProps>) {
+
   const { submit, register, handleSubmit, control, errors } = useTrackFormSets(
     type,
     defaults
   );
 
-  const [genres, loadingGenres] = useGenres()
+  const [genres, loadingGenres] = useGenres();
 
   return (
     <>
       <h3 className="text-xl mb-4 sm:text-xl md:text-3xl lg:text-4xl font-bold text-blue-500 ">
-        Mekr your own track
+        Make your own track
       </h3>
       <form
         data-testid="track-form"
@@ -39,7 +49,7 @@ export default function TrackForm({ type, defaults }) {
           />
           {errors.title && (
             <p data-testid="error-title" className="text-red-500 text-sm mt-1">
-              {errors.title.message}
+              {getErrorMessage(errors.title)}
             </p>
           )}
         </div>
@@ -58,7 +68,7 @@ export default function TrackForm({ type, defaults }) {
           />
           {errors.artist && (
             <p data-testid="error-artist" className="text-red-500 text-sm mt-1">
-              {errors.artist.message}
+              {getErrorMessage(errors.artist)}
             </p>
           )}
         </div>
@@ -96,7 +106,7 @@ export default function TrackForm({ type, defaults }) {
                 data-testid="error-genre"
                 className="text-red-500 text-sm mt-1"
               >
-                {errors.genres.message}
+                {getErrorMessage(errors.genres)}
               </p>
             )}
           </div>
@@ -116,7 +126,10 @@ export default function TrackForm({ type, defaults }) {
             {...register('album')}
           />
           {errors.album && (
-            <p className="text-red-500 text-sm mt-1">{errors.album.message}</p>
+            <p className="text-red-500 text-sm mt-1">
+              {' '}
+              {getErrorMessage(errors.album)}
+            </p>
           )}
         </div>
 
@@ -137,7 +150,7 @@ export default function TrackForm({ type, defaults }) {
               data-testid="error-cover-image"
               className="text-red-500 text-sm mt-1"
             >
-              {errors.coverImage.message}
+              {getErrorMessage(errors.coverImage)}
             </p>
           )}
         </div>

@@ -1,6 +1,6 @@
 import axios from "../axiosSets";
 
-export const getFile = async (id, name) => {
+export const getFile = async (id: string, name:string):  Promise<string | undefined> => {
   try {
     const res = await axios.get(`files/${name}`, {
       responseType: "arraybuffer",
@@ -9,6 +9,6 @@ export const getFile = async (id, name) => {
     const blobUrl = URL.createObjectURL(audioBlob);
     return blobUrl;
   } catch(err) {
-    return null
+    return 
   }
 };

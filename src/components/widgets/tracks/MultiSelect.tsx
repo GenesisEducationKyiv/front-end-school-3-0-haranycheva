@@ -77,7 +77,6 @@ export default function Multiselect() {
               type="checkbox"
               name="select-all"
               className="w-8 h-8"
-              value={ableSelect}
               data-testid="select-all"
             />
             <label htmlFor="select-all">Select All</label>

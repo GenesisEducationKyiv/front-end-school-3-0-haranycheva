@@ -1,14 +1,29 @@
+import { type ApiResult, Filters, Track } from "@/types";
 import axios from "../axiosSets";
+import {err, ok } from "neverthrow";
 
-export const getTracks = async (query) => {
-  let url = "";
-  Object.keys(query).forEach((key) => {
-    if (query[key]) {
-      url+=`&${key}=${query[key]}`
-    }
-  });
-  const res = await axios.get(`tracks?limit=12${url}`);
-  console.log(res);
+export type TrackData = {
+  data: Track[]
+  meta: {
+    limit: number
+    page: number
+    total: number
+    totalPages: number
+  }
+}
 
-  return res.data;
+export const getTracks = async (query: Filters): ApiResult<TrackData> => {
+  try {
+    let url = '';
+    Object.entries(query).forEach(([key, value]) => {
+      if (value) {
+        url += `&${key}=${value}`;
+      }
+    });
+
+    const res = await axios.get(`/tracks?limit=12${url}`);
+    return ok(res.data);
+  } catch (error: any) {
+    return err(error); 
+  }
 };

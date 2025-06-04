@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "lib": [
       "dom",
       "dom.iterable",
@@ -35,7 +35,7 @@
     "**/*.tsx",
     "next-env.d.ts",
     ".next/types/**/*.ts"
-  ],
+, "src/types/storeTypes", "src/types/models/track/TrackDataSchema.ts"  ],
   "exclude": [
     "node_modules"
   ]

@@ -5,7 +5,11 @@ import { multiDelete } from "@/api/tracks/multiDelete";
 import useModalStore from "@/store/modalStore";
 import useTrackStore from "@/store/tracksStore";
 
-export default function MultiDeleteModal({ defaults }) {
+type MultiDeleteModalProps = {
+  defaults: string[];
+};
+
+export default function MultiDeleteModal({ defaults } : MultiDeleteModalProps) {
   const closeModal = useModalStore((state) => state.closeModal);
   const list = useTrackStore((state) => state.tracks);
   const setTrackList = useTrackStore((state) => state.setTracks);
@@ -19,7 +23,7 @@ export default function MultiDeleteModal({ defaults }) {
     })
       .then(({ success }) => {
         const remaining = list.filter(
-          (track) => !success.some((del) => del === track.id)
+          (track) => !success.some((del: string) => del === track.id)
         );
         setTrackList(remaining);
       })

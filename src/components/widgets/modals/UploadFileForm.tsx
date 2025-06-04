@@ -1,48 +1,80 @@
-import { buttonClass } from "@/style/classes/button";
-import { summonToast } from "@/helpers/summonToast";
-import { deleteFile } from "@/api/tracks/deleteFile";
-import { pushFile } from "@/api/tracks/pushFile";
-import useModalStore from "@/store/modalStore";
-import useTrackStore from "@/store/tracksStore";
-import { ArrowUpTrayIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { buttonClass } from '@/style/classes/button';
+import { summonToast } from '@/helpers/summonToast';
+import { deleteFile } from '@/api/tracks/deleteFile';
+import { pushFile } from '@/api/tracks/pushFile';
+import useModalStore from '@/store/modalStore';
+import useTrackStore from '@/store/tracksStore';
+import { ArrowUpTrayIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { AudioInfo, DefaultsProps, Track } from '@/types';
 
-export default function UploadFileForm({ defaults }) {
-  const { register, handleSubmit, watch } = useForm({});
+type FormData = {
+  audio?: FileList;
+};
+
+type UploadFileFormProps =  {
+  defaults: AudioInfo
+}
+
+export default function UploadFileForm({ defaults }: UploadFileFormProps) {
+
+  if (!defaults) {
+    return;
+  }
+
+  const { register, handleSubmit, watch } = useForm<FormData>({});
   const [audioSrc, setAudioSrc] = useState(defaults?.audioFile);
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const closeModal = useModalStore((state) => state.closeModal);
   const list = useTrackStore((state) => state.tracks);
   const setTrackList = useTrackStore((state) => state.setTracks);
 
-  const watchFile = watch("audio");
+  const watchFile = watch('audio');
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FormData) => {
     const file = data.audio?.[0];
 
     if (file) {
       const formData = new FormData();
-      formData.append("audio", file);
+      formData.append('audio', file);
       closeModal();
       summonToast(pushFile, [defaults.id, formData], {
-        loading: "Updating audio...",
-        success: "Audio updated!",
+        loading: 'Updating audio...',
+        success: 'Audio updated!',
       }).then((result) => {
-        setTrackList(
-          list.map((track) => (track.id === result.id ? result : track))
+        result.match(
+          (updatedTrack) => {
+            setTrackList(
+              list.map((track) =>
+                track.id === updatedTrack.id ? updatedTrack : track
+              )
+            );
+          },
+          (error) => {
+            console.error('Failed to delete file', error);
+          }
         );
       });
     } else if (!file && defaults?.audioFile) {
       closeModal();
       summonToast(deleteFile, [defaults.id], {
-        loading: "Deleting audio...",
-        success: "Audio deleted!",
+        loading: 'Deleting audio...',
+        success: 'Audio deleted!',
       })
         .then((result) => {
-          setTrackList(
-            list.map((track) => (track.id === result.id ? result : track))
+          result.match(
+            (updatedTrack) => {
+              setTrackList(
+                list.map((track) =>
+                  track.id === updatedTrack.id ? updatedTrack : track
+                )
+              );
+            },
+            (error) => {
+              console.error('Failed to delete file', error);
+            }
           );
         })
         .catch(() => {});
@@ -51,11 +83,16 @@ export default function UploadFileForm({ defaults }) {
 
   useEffect(() => {
     const file = watchFile?.[0];
+    let blobUrl: string | null = null;
 
     if (file) {
-      const blobUrl = URL.createObjectURL(file);
+      blobUrl = URL.createObjectURL(file);
       setAudioSrc(blobUrl);
     }
+
+    return () => {
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+    };
   }, [watchFile]);
 
   return (
@@ -63,9 +100,9 @@ export default function UploadFileForm({ defaults }) {
       <input
         type="file"
         accept="audio/*"
-        {...register("audio")}
-        ref={(e) => {
-          register("audio").ref(e);
+        {...register('audio')}
+        ref={(e: HTMLInputElement | null) => {
+          register('audio').ref(e);
           fileInputRef.current = e;
         }}
         className="hidden"
@@ -84,7 +121,7 @@ export default function UploadFileForm({ defaults }) {
         <li>
           <button
             type="button"
-            onClick={() => setAudioSrc("")}
+            onClick={() => setAudioSrc('')}
             className={`${buttonClass} px-8 bg-red-900 hover:bg-red-950`}
           >
             <TrashIcon className="h-5 w-5 text-almond" />

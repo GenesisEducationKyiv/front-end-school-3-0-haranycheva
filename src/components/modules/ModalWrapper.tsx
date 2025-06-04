@@ -1,16 +1,18 @@
-"use client";
+'use client';
 
-import useModalStore from "@/store/modalStore";
-import { XCircleIcon } from "@heroicons/react/24/outline";
-import UploadFileForm from "@/components/widgets/modals/UploadFileForm";
-import DeleteTrackModal from "@/components/widgets/modals/DeleteTrackModal";
-import MultiDeleteModal from "@/components/widgets/modals/MultiDeleteModal";
-import TrackForm from "../widgets/modals/TrackForm";
+import useModalStore from '@/store/modalStore';
+import { XCircleIcon } from '@heroicons/react/24/outline';
+import UploadFileForm from '@/components/widgets/modals/UploadFileForm';
+import DeleteTrackModal from '@/components/widgets/modals/DeleteTrackModal';
+import MultiDeleteModal from '@/components/widgets/modals/MultiDeleteModal';
+import TrackForm from '../widgets/modals/TrackForm';
+import { isAudioInfo, isStringArray, isTrack } from '@/types';
 
 export default function ModalWrapper() {
   const closeModal = useModalStore((state) => state.closeModal);
   const modalType = useModalStore((state) => state.type);
   const defaults = useModalStore((state) => state.info);
+
 
   return modalType ? (
     <div
@@ -28,15 +30,22 @@ export default function ModalWrapper() {
           <XCircleIcon className="h-8 w-8 text-blue-400" />
         </button>
 
-        {modalType === "create" ? <TrackForm type={"create"} /> : null}
-        {modalType === "edit" ? <TrackForm type={"edit"} defaults={defaults} /> : null}
-        {modalType === "file" ? <UploadFileForm defaults={defaults} /> : null}
-        {modalType === "delete" ? (
+        {modalType === 'create' && <TrackForm type="create" defaults={null} />}
+
+        {modalType === 'edit' && isTrack(defaults) && (
+          <TrackForm type="edit" defaults={defaults} />
+        )}
+
+        {modalType === 'file' && isAudioInfo(defaults) && (
+          <UploadFileForm defaults={defaults} />
+        )}
+
+        {modalType === 'delete' && isTrack(defaults) && (
           <DeleteTrackModal defaults={defaults} />
-        ) : null}
-        {modalType === "deleteMulti" ? (
+        )}
+        {modalType === 'deleteMulti' && isStringArray(defaults) && (
           <MultiDeleteModal defaults={defaults} />
-        ) : null}
+        )}
       </div>
     </div>
   ) : null;
