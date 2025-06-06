@@ -31,7 +31,7 @@ export default function UploadFileForm({ defaults }: UploadFileFormProps) {
   const watchFile = watch('audio');
 
   const onSubmit = async (data: FormData) => {
-    if (!defaults) return;
+    if (!defaults) return null;
 
     const file = data.audio?.[0];
 

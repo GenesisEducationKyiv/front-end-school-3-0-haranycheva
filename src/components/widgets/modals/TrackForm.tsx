@@ -73,7 +73,7 @@ export default function TrackForm({
           )}
         </div>
 
-        {genres.length ? (
+        {genres.length && (
           <div className="w-full">
             <label className="block sm:text-lg text-sm font-semibold">
               Genres
@@ -110,8 +110,6 @@ export default function TrackForm({
               </p>
             )}
           </div>
-        ) : (
-          ''
         )}
         <div className="w-full">
           <label className="block sm:text-lg text-sm font-semibold">
@@ -139,7 +137,9 @@ export default function TrackForm({
           </label>
           <input
             data-testid="input-cover-image"
-            className={clsx( inputFieldClass, { "border-red-500 focus:outline-red-500": errors.coverImage, } )}
+            className={clsx(inputFieldClass, {
+              'border-red-500 focus:outline-red-500': errors.coverImage,
+            })}
             placeholder="Enter url for the cover of the track"
             {...register('coverImage')}
           />
