@@ -8,6 +8,7 @@ import { getFile } from '@/api/tracks/getFile';
 import Selected from './Selected';
 import useSelectedStore from '@/store/selectedStore';
 import { Track } from '@/types';
+import clsx from 'clsx';
 
 interface TrackItemProps {
   track: Track;
@@ -32,34 +33,29 @@ export default function TrackItem({
     setIsSelected(selected.some((el) => el === track.id));
   }, [selected, track.id]);
 
-useEffect(() => {
-  if (!track?.audioFile) {
-    setFileSrc(undefined);
-    return;
-  }
+  useEffect(() => {
+    if (!track?.audioFile) {
+      setFileSrc(undefined);
+      return;
+    }
 
-  async function fetchData() {
-    const data = await getFile(track.id, track.audioFile!);
-    setFileSrc(data || undefined);
-  }
+    async function fetchData() {
+      const data = await getFile(track.id, track.audioFile!);
+      setFileSrc(data || undefined);
+    }
 
-  fetchData();
-}, [track?.audioFile, track.id]);
-
+    fetchData();
+  }, [track?.audioFile, track.id]);
 
   return (
     <li
-      className={`${
-        isSelected ? 'bg-blue-400' : 'bg-blue-500'
-      }  relative px-4 list-none reex flex-col pt-4 rounded-[10px] hover:bg-blue-400 ransition-colors duration-200 parent`}
+      className={clsx(
+        isSelected ? 'bg-blue-400' : 'bg-blue-500',
+        'relative px-4 list-none flex flex-col pt-4 rounded-[10px] hover:bg-blue-400 transition-colors duration-200 parent'
+      )}
       data-testid={`track-item-${track.id}`}
     >
-      {ableSelect && (
-        <Selected
-          isSelected={isSelected}
-          id={track.id}
-        />
-      )}
+      {ableSelect && <Selected isSelected={isSelected} id={track.id} />}
       <div className="mb-2 relative">
         <Image
           src={track.coverImage || '/no-image.jpg'}

@@ -8,22 +8,26 @@ import { createTrack } from '@/api/tracks/createTrack';
 import { editTrack } from '@/api/tracks/editTrack';
 import { CreateTrackSchema, FormType, Track, type Genre } from '@/types';
 import { z } from 'zod';
+import { useMemo } from 'react';
+import { handleEdit } from '@/helpers/trackForm/handleEdit';
+import { handleCreate } from '@/helpers/trackForm/handleCreate';
 
 type FormData = z.infer<typeof CreateTrackSchema>;
 
 export const useTrackFormSets = (type: FormType, defaults: Track | null) => {
-  const defaultValues = {
-    title: defaults?.title,
-    artist: defaults?.artist,
-    album: defaults?.album || '',
-    genres: defaults?.genres.map((el: Genre) => ({ value: el, label: el })),
-    coverImage: defaults?.coverImage || '',
-  };
+  const defaultValues = useMemo(
+    () => ({
+      title: defaults?.title ?? '',
+      artist: defaults?.artist ?? '',
+      album: defaults?.album ?? '',
+      genres: defaults?.genres?.map((el) => ({ value: el, label: el })) ?? [],
+      coverImage: defaults?.coverImage ?? '',
+    }),
+    [defaults]
+  );
 
+  const { tracks: list, setTracks: setTrackList, setLoading } = useTrackStore();
   const closeModal = useModalStore((state) => state.closeModal);
-  const list = useTrackStore((state) => state.tracks);
-  const setTrackList = useTrackStore((state) => state.setTracks);
-  const setLoading = useTrackStore((state) => state.setLoading);
 
   const {
     register,
@@ -46,21 +50,9 @@ export const useTrackFormSets = (type: FormType, defaults: Track | null) => {
     try {
       if (type === 'edit') {
         if (!defaults) throw new Error('defaults properties are missing');
-        const result = await summonToast(editTrack, [defaults.id, payload], {
-          loading: 'Editing your track...',
-          success: 'Track is edited',
-        });
-        setTrackList(
-          list.map((track) => (track.id === result.id ? result : track))
-        );
-        reset();
+        handleEdit(defaults.id, payload, list, setTrackList);
       } else {
-        const result = await summonToast(createTrack, [payload], {
-          loading: 'Creating track...',
-          success: 'Track created!',
-        });
-        setTrackList([result, ...list]);
-        reset();
+        handleCreate(payload, list, setTrackList);
       }
     } catch (e) {
       if (e instanceof Error) {
@@ -69,6 +61,7 @@ export const useTrackFormSets = (type: FormType, defaults: Track | null) => {
         console.error('Unknown error', e);
       }
     } finally {
+      reset();
       setLoading(false);
     }
   };

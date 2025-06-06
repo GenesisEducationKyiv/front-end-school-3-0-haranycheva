@@ -8,23 +8,20 @@ import { ArrowUpTrayIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AudioInfo, DefaultsProps, Track } from '@/types';
+import { handleDelete } from '@/helpers/audioForm/handleDelete';
+import { handleUpdate } from '@/helpers/audioForm/handleUpdate';
 
 type FormData = {
   audio?: FileList;
 };
 
-type UploadFileFormProps =  {
-  defaults: AudioInfo
-}
+type UploadFileFormProps = {
+  defaults: AudioInfo;
+};
 
 export default function UploadFileForm({ defaults }: UploadFileFormProps) {
-
-  if (!defaults) {
-    return;
-  }
-
   const { register, handleSubmit, watch } = useForm<FormData>({});
-  const [audioSrc, setAudioSrc] = useState(defaults?.audioFile);
+  const [audioSrc, setAudioSrc] = useState(defaults?.audioFile ?? "");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const closeModal = useModalStore((state) => state.closeModal);
@@ -34,50 +31,18 @@ export default function UploadFileForm({ defaults }: UploadFileFormProps) {
   const watchFile = watch('audio');
 
   const onSubmit = async (data: FormData) => {
+    if (!defaults) return;
+
     const file = data.audio?.[0];
 
     if (file) {
       const formData = new FormData();
       formData.append('audio', file);
       closeModal();
-      summonToast(pushFile, [defaults.id, formData], {
-        loading: 'Updating audio...',
-        success: 'Audio updated!',
-      }).then((result) => {
-        result.match(
-          (updatedTrack) => {
-            setTrackList(
-              list.map((track) =>
-                track.id === updatedTrack.id ? updatedTrack : track
-              )
-            );
-          },
-          (error) => {
-            console.error('Failed to delete file', error);
-          }
-        );
-      });
+      handleUpdate(defaults.id, list, formData, setTrackList);
     } else if (!file && defaults?.audioFile) {
       closeModal();
-      summonToast(deleteFile, [defaults.id], {
-        loading: 'Deleting audio...',
-        success: 'Audio deleted!',
-      })
-        .then((result) => {
-          result.match(
-            (updatedTrack) => {
-              setTrackList(
-                list.map((track) =>
-                  track.id === updatedTrack.id ? updatedTrack : track
-                )
-              );
-            },
-            (error) => {
-              console.error('Failed to delete file', error);
-            }
-          );
-        })
-        .catch(() => {});
+      handleDelete(defaults.id, list, setTrackList);
     }
   };
 

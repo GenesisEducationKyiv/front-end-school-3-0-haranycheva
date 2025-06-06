@@ -6,13 +6,26 @@ import UploadFileForm from '@/components/widgets/modals/UploadFileForm';
 import DeleteTrackModal from '@/components/widgets/modals/DeleteTrackModal';
 import MultiDeleteModal from '@/components/widgets/modals/MultiDeleteModal';
 import TrackForm from '../widgets/modals/TrackForm';
-import { isAudioInfo, isStringArray, isTrack } from '@/types';
+import { isAudioInfo, isStringArray, isTrack, ModalStore } from '@/types';
+import { JSX } from 'react';
 
 export default function ModalWrapper() {
   const closeModal = useModalStore((state) => state.closeModal);
   const modalType = useModalStore((state) => state.type);
   const defaults = useModalStore((state) => state.info);
 
+
+  const modalComponents: Record<string, JSX.Element | null> = {
+    create: <TrackForm type="create" defaults={null} />,
+    edit: isTrack(defaults) ? (
+      <TrackForm type="edit" defaults={defaults} />
+    ) : null,
+    file: isAudioInfo(defaults) ? <UploadFileForm defaults={defaults} /> : null,
+    delete: isTrack(defaults) ? <DeleteTrackModal defaults={defaults} /> : null,
+    deleteMulti: isStringArray(defaults) ? (
+      <MultiDeleteModal defaults={defaults} />
+    ) : null,
+  };
 
   return modalType ? (
     <div
@@ -30,22 +43,7 @@ export default function ModalWrapper() {
           <XCircleIcon className="h-8 w-8 text-blue-400" />
         </button>
 
-        {modalType === 'create' && <TrackForm type="create" defaults={null} />}
-
-        {modalType === 'edit' && isTrack(defaults) && (
-          <TrackForm type="edit" defaults={defaults} />
-        )}
-
-        {modalType === 'file' && isAudioInfo(defaults) && (
-          <UploadFileForm defaults={defaults} />
-        )}
-
-        {modalType === 'delete' && isTrack(defaults) && (
-          <DeleteTrackModal defaults={defaults} />
-        )}
-        {modalType === 'deleteMulti' && isStringArray(defaults) && (
-          <MultiDeleteModal defaults={defaults} />
-        )}
+        {modalType && modalComponents[modalType]}
       </div>
     </div>
   ) : null;

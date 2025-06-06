@@ -1,6 +1,12 @@
-import axios from "../axiosSets";
+import { ApiResult, Genre } from '@/types';
+import axios from '../axiosSets';
+import { err, ok } from 'neverthrow';
 
-export const getGenges = async () => {
-    const res = await axios.get("genres")
-    return res.data
+export const getGenges = async (): ApiResult<Genre[]> => {
+  try {
+    const res = await axios.get('genres');
+    return ok(res.data);
+  } catch (error: any) {
+    return err(error);
+  }
 };

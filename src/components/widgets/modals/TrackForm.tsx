@@ -8,6 +8,7 @@ import { useTrackFormSets } from '@/hooks/useTrackFormSets';
 import { useGenres } from '@/hooks/useGenres';
 import { DefaultsProps, FormType } from '@/types';
 import { getErrorMessage } from '@/helpers/getErrorMessage';
+import clsx from 'clsx';
 
 type TrackFormProps = {
   type: FormType;
@@ -17,7 +18,6 @@ export default function TrackForm({
   type,
   defaults,
 }: DefaultsProps<TrackFormProps>) {
-
   const { submit, register, handleSubmit, control, errors } = useTrackFormSets(
     type,
     defaults
@@ -41,9 +41,9 @@ export default function TrackForm({
           </label>
           <input
             data-testid="input-title"
-            className={`${inputFieldClass} ${
-              errors.title ? 'border-red-500 focus:outline-red-500' : ''
-            }`}
+            className={clsx(inputFieldClass, {
+              'border-red-500 focus:outline-red-500': errors.title,
+            })}
             placeholder="Enter title of the track"
             {...register('title')}
           />
@@ -60,9 +60,9 @@ export default function TrackForm({
           </label>
           <input
             data-testid="input-artist"
-            className={`${inputFieldClass} ${
-              errors.artist ? 'border-red-500 focus:outline-red-500' : ''
-            }`}
+            className={clsx(inputFieldClass, {
+              'border-red-500 focus:outline-red-500': errors.artist,
+            })}
             placeholder="Enter artist that created it"
             {...register('artist')}
           />
@@ -119,9 +119,9 @@ export default function TrackForm({
           </label>
           <input
             data-testid="input-album"
-            className={` ${inputFieldClass} ${
-              errors.album ? 'border-red-500 focus:outline-red-500' : ''
-            } `}
+            className={clsx(inputFieldClass, {
+              'border-red-500 focus:outline-red-500': errors.album,
+            })}
             placeholder="What album your track belongs to?"
             {...register('album')}
           />
@@ -139,9 +139,7 @@ export default function TrackForm({
           </label>
           <input
             data-testid="input-cover-image"
-            className={`${inputFieldClass} ${
-              errors.coverImage ? 'border-red-500 focus:outline-red-500' : ''
-            }`}
+            className={clsx( inputFieldClass, { "border-red-500 focus:outline-red-500": errors.coverImage, } )}
             placeholder="Enter url for the cover of the track"
             {...register('coverImage')}
           />

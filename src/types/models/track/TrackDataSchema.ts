@@ -16,7 +16,7 @@ const audioFileSchema = z
       invalid_type_error: 'Genres must be an array of strings',
     })
     .min(1, 'At least one genre is required'),
-  audioFile: audioFileSchema.optional(),
+  audioFile: audioFileSchema  .optional(),
   coverImage: z.string().url('Cover image must be a valid URL').optional(),
 });
 

@@ -8,14 +8,22 @@ export const useInitialFetch = () => {
   const [maxPage, setMaxPage] = useState(0);
   const setTrackList = useTrackStore((state) => state.setTracks);
   const setLoading = useTrackStore((state) => state.setLoading);
-  const searchParams = useGetSearchParams();
+  const { search, artist, genre, sort, order, page } = useGetSearchParams();
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      const data = await getTracks(searchParams);
+      const data = await getTracks({
+        search,
+        artist,
+        genre,
+        sort,
+        order,
+        page,
+      });
       data.match(
         (res) => {
+          console.log(res)
           setTrackList(res.data);
           setMaxPage(Math.ceil(res.meta.total / res.meta.limit));
         },
@@ -26,7 +34,7 @@ export const useInitialFetch = () => {
       setLoading(false);
     }
     fetchData();
-  }, [JSON.stringify(searchParams)]);
+  }, [search, artist, genre, sort, order, page, setLoading, setTrackList]);
 
   return maxPage;
 };

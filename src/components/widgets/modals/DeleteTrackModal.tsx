@@ -4,8 +4,13 @@ import { summonToast } from "@/helpers/summonToast";
 import { deleteTrack } from "@/api/tracks/deleteTrack";
 import useModalStore from "@/store/modalStore";
 import useTrackStore from "@/store/tracksStore";
+import { Track } from "@/types";
 
-export default function DeleteTrackModal({ defaults }) {
+type DeleteTrackModalProps = {
+  defaults: Track
+}
+
+export default function DeleteTrackModal({ defaults } : DeleteTrackModalProps) {
   const closeModal = useModalStore((state) => state.closeModal);
   const list = useTrackStore((state) => state.tracks);
   const setTrackList = useTrackStore((state) => state.setTracks);

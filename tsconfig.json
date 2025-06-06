@@ -33,9 +33,8 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "next-env.d.ts",
     ".next/types/**/*.ts"
-, "src/types/storeTypes", "src/types/models/track/TrackDataSchema.ts"  ],
+  ],
   "exclude": [
     "node_modules"
   ]

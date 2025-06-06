@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { PlayCircleIcon } from "@heroicons/react/24/outline";
 import { PauseCircleIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
 
 interface AudioPlayerProps {
   id: string;
@@ -57,7 +58,7 @@ const AudioPlayer = ({ id, src, isPlaying, setIsPlaying }: AudioPlayerProps) => 
     <div className="flex items-center gap-4 w-full max-w-md">
       {isPlaying ? (
         <button
-          className={`${src ? "cursor-pointer" : ""}`}
+          className={clsx({ "cursor-pointer": src })}
           disabled={!src}
           onClick={togglePlay}
           data-testid={`pause-button-${id}`}
@@ -66,7 +67,7 @@ const AudioPlayer = ({ id, src, isPlaying, setIsPlaying }: AudioPlayerProps) => 
         </button>
       ) : (
         <button
-          className={`${src ? "cursor-pointer" : ""}`}
+          className={clsx({ "cursor-pointer": src })}
           disabled={!src}
           onClick={togglePlay}
           data-testid={`play-button-${id}`}
