@@ -1,9 +1,9 @@
 import { Filters } from '../models';
 
-export const isSort = (value: any): value is Filters['sort'] => {
+export const isSort = (value: any): value is NonNullable<Filters['sort']> => {
   return ['title', 'artist', 'createdAt', 'album'].includes(value);
 };
 
-export const isOrder = (value: any): value is Filters['order'] => {
+export const isOrder = (value: any): value is NonNullable<Filters['order']> => {
   return ['asc', 'desc'].includes(value);
 };
