@@ -15,7 +15,7 @@ export const getParam = (
 
 export const getValidatedParam = <T extends string>(
   searchParams: URLSearchParams,
-  key: string,
+  key: keyof Filters,
   validator: (value: string) => value is T,
   defaultValue: T
 ): T  => {
