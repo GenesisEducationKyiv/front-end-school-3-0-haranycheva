@@ -3,10 +3,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import debounce from 'lodash.debounce';
-import { getGenges } from '@/api/genres/getGenres';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useGenres } from '@/hooks/useGenres';
-import { Filters } from '@/types';
 import { useGetSearchParams } from '@/hooks/useGetSearchParams';
 
 type FormValues = {
@@ -73,7 +71,10 @@ const SearchForm = () => {
     const subscription = watch((values) => {
       debouncedUpdateURL(values);
     });
-    return () => subscription.unsubscribe();
+      return () => {
+    subscription.unsubscribe();
+    debouncedUpdateURL.cancel(); 
+  };
   }, [watch, debouncedUpdateURL]);
 
   return (

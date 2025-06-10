@@ -1,4 +1,4 @@
-import { getParam, getValidatedParam } from '@/helpers/getParams';
+import { getSafeParam } from '@/helpers/getParams';
 import { Filters, isOrder, isSort } from '@/types';
 import { O, pipe } from '@mobily/ts-belt';
 import { useSearchParams } from 'next/navigation';
@@ -6,22 +6,24 @@ import { useSearchParams } from 'next/navigation';
 export const useGetSearchParams = (): Filters => {
   const searchParams = useSearchParams();
 
-  const search = getParam(searchParams, 'search', '');
-  const artist = getParam(searchParams, 'artist', '');
-  const genre = getParam(searchParams, 'genre', '');
+  const get = (key: keyof Filters) => getSafeParam(searchParams, key, '');
 
- const sort = getValidatedParam<NonNullable<Filters['sort']>>(
-  searchParams,
-  'sort',
-  isSort,
-  'title'
-);
-const order = getValidatedParam<NonNullable<Filters['order']>>(
-  searchParams,
-  'order',
-  isOrder,
-  'asc'
-);
+  const search = get('search');
+  const artist = get('artist');
+  const genre = get('genre');
+
+  const sort = getSafeParam<NonNullable<Filters['sort']>>(
+    searchParams,
+    'sort',
+    'title',
+    isSort
+  );
+  const order = getSafeParam<NonNullable<Filters['order']>>(
+    searchParams,
+    'order',
+    'asc',
+    isOrder
+  );
 
   const page = pipe(
     searchParams.get('page'),
@@ -33,4 +35,3 @@ const order = getValidatedParam<NonNullable<Filters['order']>>(
 
   return { search, artist, genre, sort, order, page };
 };
-
