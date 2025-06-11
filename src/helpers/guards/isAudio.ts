@@ -1,4 +1,4 @@
-import { AudioInfo } from "../repeated";
+import { AudioInfo } from "../../types/repeated";
 
 export function isAudioInfo(obj: any): obj is AudioInfo {
   return (

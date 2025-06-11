@@ -1,61 +1,54 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState, useCallback } from "react";
-import { useForm, Controller } from "react-hook-form";
-import debounce from "lodash.debounce";
-import { getGenges } from "@/api/genres/getGenres";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import React, { useEffect, useState, useCallback } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import debounce from 'lodash.debounce';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useGenres } from '@/hooks/useGenres';
+import { useGetSearchParams } from '@/hooks/useGetSearchParams';
+
+type FormValues = {
+  search: string;
+  artist: string;
+  genre: string;
+  sort: string;
+  order: string;
+};
 
 const SearchForm = () => {
-  const { register, control, setValue, handleSubmit, watch } = useForm({
+  const { register, control, setValue, handleSubmit, watch } = useForm<FormValues>({
     defaultValues: {
-      search: "",
-      artist: "",
-      genre: "",
-      sort: "title",
-      order: "asc",
+      search: '',
+      artist: '',
+      genre: '',
+      sort: 'title',
+      order: 'asc',
     },
   });
 
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [genres, setGenres] = useState([]);
-  const [loadingGenres, setLoadingGenres] = useState(false);
+  const params = useGetSearchParams();
+  const [genres, loadingGenres] = useGenres();
 
   useEffect(() => {
-    const fetchGenres = async () => {
-      setLoadingGenres(true);
-      const result = await getGenges();
-        setLoadingGenres(false);
-        setGenres(result);
-    };
-    fetchGenres();
-  }, []);
-
-  useEffect(() => {
-    const params = {
-      search: searchParams?.get("search") || "",
-      artist: searchParams?.get("artist") || "",
-      genre: searchParams?.get("genre") || "",
-      sort: searchParams?.get("sort") || "title",
-      order: searchParams?.get("order") || "asc",
-    };
-
     Object.entries(params).forEach(([key, value]) => {
-      setValue(key, value);
+      setValue(key as keyof FormValues, value.toString());
     });
-  }, [searchParams, setValue]);
+  }, [params, setValue]);
 
   const debouncedUpdateURL = useCallback(
-    debounce((values) => {
+    debounce((values: FormValues) => {
       const params = new URLSearchParams(searchParams.toString());
 
       let filterChanged = false;
 
-      ["search", "artist", "genre", "sort", "order"].forEach((key) => {
+      (
+        ['search', 'artist', 'genre', 'sort', 'order'] as (keyof FormValues)[]
+      ).forEach((key) => {
         const newValue = values[key];
-        const oldValue = searchParams.get(key) || "";
+        const oldValue = searchParams.get(key) || '';
         if (newValue !== oldValue) {
           filterChanged = true;
         }
@@ -66,7 +59,7 @@ const SearchForm = () => {
         }
       });
       if (filterChanged) {
-        params.set("page", "1");
+        params.set('page', '1');
       }
       const newUrl = `${pathname}?${params.toString()}`;
       router.push(newUrl);
@@ -78,7 +71,10 @@ const SearchForm = () => {
     const subscription = watch((values) => {
       debouncedUpdateURL(values);
     });
-    return () => subscription.unsubscribe();
+      return () => {
+    subscription.unsubscribe();
+    debouncedUpdateURL.cancel(); 
+  };
   }, [watch, debouncedUpdateURL]);
 
   return (
@@ -88,7 +84,7 @@ const SearchForm = () => {
         onSubmit={handleSubmit(() => {})}
       >
         <input
-          {...register("search")}
+          {...register('search')}
           type="text"
           placeholder="Search by title"
           className="border p-2 rounded w-full sm:w-48 focus:outline-none"
@@ -96,7 +92,7 @@ const SearchForm = () => {
           data-testid="search-input"
         />
         <input
-          {...register("artist")}
+          {...register('artist')}
           type="text"
           placeholder="Search by artist"
           className="border p-2 rounded w-full sm:w-48 focus:outline-none"
@@ -120,9 +116,9 @@ const SearchForm = () => {
               ) : (
                 <>
                   <option value="">All genres</option>
-                  {genres.map((el) => (
-                    <option key={el} value={el}>
-                      {el}
+                  {genres.map(({ value }) => (
+                    <option key={value} value={value}>
+                      {value}
                     </option>
                   ))}
                 </>
