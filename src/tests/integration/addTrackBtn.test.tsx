@@ -1,4 +1,3 @@
-import React from 'react';
 import AddTrackBtn from '@/components/ui/AddTrackBtn';
 import useModalStore from '@/store/modalStore';
 import useSelectedStore from '@/store/selectedStore';

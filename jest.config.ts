@@ -1,4 +1,3 @@
-// jest.config.js
 import type { Config } from 'jest';
 
 const config: Config = {
@@ -6,6 +5,7 @@ const config: Config = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 
   testEnvironment: 'jsdom',
+
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
@@ -13,12 +13,7 @@ const config: Config = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 
   transform: {
-    '^.+\\.(ts|tsx)$': [
-      'ts-jest',
-      {
-        tsconfig: 'tsconfig.json',
-      },
-    ],
+    '^.+\\.(ts|tsx|js|jsx)$': 'babel-jest',
   },
 
   transformIgnorePatterns: ['/node_modules/(?!react-select)'],
