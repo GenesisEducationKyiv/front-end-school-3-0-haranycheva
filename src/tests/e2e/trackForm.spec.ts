@@ -1,4 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+
+async function openCreateTrackModal(page: Page) {
+  await page.click('[data-testid="create-track-button"]');
+  await expect(page.locator('[data-testid="track-form"]')).toBeVisible();
+}
 
 test.describe('Create Track Modal', () => {
   test.beforeEach(async ({ page }) => {
@@ -6,20 +11,17 @@ test.describe('Create Track Modal', () => {
   });
 
   test('opens modal on Create Track button click', async ({ page }) => {
-    await page.click('[data-testid="create-track-button"]');
-    await expect(page.locator('[data-testid="track-form"]')).toBeVisible();
+    await openCreateTrackModal(page);
   });
 
   test('fills and submits the create track form', async ({ page }) => {
-    await page.click('[data-testid="create-track-button"]');
-    await expect(page.locator('[data-testid="track-form"]')).toBeVisible();
+    await openCreateTrackModal(page);
 
     await page.fill('[data-testid="input-title"]', 'My Test Track');
     await page.fill('[data-testid="input-artist"]', 'Test Artist');
     await page.fill('[data-testid="input-album"]', 'Test Album');
 
     const genreSelector = page.locator('.basic-multi-select');
-    await genreSelector.waitFor({ state: 'visible', timeout: 10000 });
     await expect(genreSelector).toBeVisible();
 
     await genreSelector.click();
@@ -34,6 +36,13 @@ test.describe('Create Track Modal', () => {
     await options.first().click();
 
     await page.click('[data-testid="submit-button"]');
+    await expect(page.locator('[data-testid="track-form"]')).toBeHidden();
+  });
+
+  test('closes modal when clicking on close button', async ({ page }) => {
+    await openCreateTrackModal(page);
+
+    await page.click('button.absolute.top-2.right-2');
     await expect(page.locator('[data-testid="track-form"]')).toBeHidden();
   });
 });
