@@ -45,7 +45,7 @@ export default function ButtonList({ track, audioFile } : ButtonListProps) {
           onClick={handleDelete}
           type="button"
           className="cursor-pointer p-1 pb-0"
-          data-testid={`delete-track-{$id}`}
+          data-testid={`delete-track-${track.id}`}
         >
           <TrashIcon className="h-5 w-5 text-almond" />
         </button>
