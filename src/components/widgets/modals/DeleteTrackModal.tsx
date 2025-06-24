@@ -1,10 +1,11 @@
 import { buttonClass } from "@/style/classes/button";
 import { textClass } from "@/style/classes/text";
 import { summonToast } from "@/helpers/summonToast";
-import { deleteTrack } from "@/api/tracks/deleteTrack";
+
 import useModalStore from "@/store/modalStore";
-import useTrackStore from "@/store/tracksStore";
+
 import { Track } from "@/types";
+import { useDeleteTrack } from "@/hooks/queries/useDeleteTrack";
 
 type DeleteTrackModalProps = {
   defaults: Track
@@ -12,24 +13,14 @@ type DeleteTrackModalProps = {
 
 export default function DeleteTrackModal({ defaults } : DeleteTrackModalProps) {
   const closeModal = useModalStore((state) => state.closeModal);
-  const list = useTrackStore((state) => state.tracks);
-  const setTrackList = useTrackStore((state) => state.setTracks);
-  const setLoading = useTrackStore((state) => state.setLoading);
+  const { mutateAsync: deleteTrack } = useDeleteTrack();
 
   const handleDelete = async () => {
     const { id } = defaults;
-    setLoading(true);
-    summonToast(deleteTrack, [id], {
+    summonToast(() => deleteTrack(id), [], {
       loading: "Deleting track...",
       success: "Track deleted",
     })
-      .then(() => {
-        setTrackList(list.filter((el) => id != el.id));
-      })
-      .catch(() => {})
-      .finally(() => {
-        setLoading(false);
-      });
     closeModal();
   };
 

@@ -5,7 +5,7 @@ import { inputFieldClass } from '@/style/classes/input-field';
 import { Controller } from 'react-hook-form';
 import Select from 'react-select';
 import { useTrackFormSets } from '@/hooks/useTrackFormSets';
-import { useGenres } from '@/hooks/useGenres';
+import { useGenres } from '@/hooks/queries/useGenres';
 import { DefaultsProps, FormType } from '@/types';
 import { getErrorMessage } from '@/helpers/getErrorMessage';
 import clsx from 'clsx';
@@ -23,7 +23,7 @@ export default function TrackForm({
     defaults
   );
 
-  const [genres, loadingGenres] = useGenres();
+  const { data: genres = [], isLoading: loadingGenres } = useGenres();
 
   return (
     <>

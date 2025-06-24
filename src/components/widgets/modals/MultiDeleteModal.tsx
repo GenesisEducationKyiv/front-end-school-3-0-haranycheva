@@ -1,9 +1,8 @@
 import { buttonClass } from "@/style/classes/button";
 import { textClass } from "@/style/classes/text";
 import { summonToast } from "@/helpers/summonToast";
-import { multiDelete } from "@/api/tracks/multiDelete";
 import useModalStore from "@/store/modalStore";
-import useTrackStore from "@/store/tracksStore";
+import { useMultiDeleteTracks } from "@/hooks/queries/useMultiDeleteTracks";
 
 type MultiDeleteModalProps = {
   defaults: string[];
@@ -11,25 +10,13 @@ type MultiDeleteModalProps = {
 
 export default function MultiDeleteModal({ defaults } : MultiDeleteModalProps) {
   const closeModal = useModalStore((state) => state.closeModal);
-  const list = useTrackStore((state) => state.tracks);
-  const setTrackList = useTrackStore((state) => state.setTracks);
-  const setLoading = useTrackStore((state) => state.setLoading);
+  const { mutateAsync: deleteTracks } = useMultiDeleteTracks();
 
   const handleDelete = async () => {
-    setLoading(true);
-    summonToast(multiDelete, [defaults], {
+    await summonToast(deleteTracks, [defaults], {
       loading: "Deleting tracks...",
       success: "Tracks deleted",
-    })
-      .then(({ success }) => {
-        const remaining = list.filter(
-          (track) => !success.some((del: string) => del === track.id)
-        );
-        setTrackList(remaining);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    });
     closeModal();
   };
 

@@ -9,12 +9,11 @@ import Multiselect from "@/components/widgets/tracks/MultiSelect";
 import { useInitialFetch } from "@/hooks/useInitialFetch";
 
 export default function Tracks() {
-  const maxPage = useInitialFetch()
-
+  const {maxPage, data} = useInitialFetch()
   return (
     <div className="pb-10">
       <SearchForm />
-      <Multiselect />
+      <Multiselect list={data}/>
       <TrackList />
       <Pagination maxPage={maxPage} />
     </div>

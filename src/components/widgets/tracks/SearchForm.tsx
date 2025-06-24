@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import debounce from 'lodash.debounce';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { useGenres } from '@/hooks/useGenres';
+import { useGenres } from '@/hooks/queries/useGenres';
 import { useGetSearchParams } from '@/hooks/useGetSearchParams';
 
 type FormValues = {
@@ -16,27 +16,22 @@ type FormValues = {
 };
 
 const SearchForm = () => {
+  const params = useGetSearchParams();
+
   const { register, control, setValue, handleSubmit, watch } = useForm<FormValues>({
-    defaultValues: {
-      search: '',
-      artist: '',
-      genre: '',
-      sort: 'title',
-      order: 'asc',
-    },
+  defaultValues: {
+    search: params.search,
+    artist: params.artist,
+    genre: params.genre,
+    sort: params.sort,
+    order: params.order,
+  },
   });
 
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const params = useGetSearchParams();
-  const [genres, loadingGenres] = useGenres();
-
-  useEffect(() => {
-    Object.entries(params).forEach(([key, value]) => {
-      setValue(key as keyof FormValues, value.toString());
-    });
-  }, [params, setValue]);
+  const { data: genres = [], isLoading: loadingGenres } = useGenres();
 
   const debouncedUpdateURL = useCallback(
     debounce((values: FormValues) => {

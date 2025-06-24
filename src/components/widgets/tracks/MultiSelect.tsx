@@ -1,16 +1,15 @@
-import { buttonClass } from "@/style/classes/button";
-import useModalStore from "@/store/modalStore";
-import useSelectedStore from "@/store/selectedStore";
-import useTrackStore from "@/store/tracksStore";
-import { useEffect, useState } from "react";
+import { buttonClass } from '@/style/classes/button';
+import useModalStore from '@/store/modalStore';
+import useSelectedStore from '@/store/selectedStore';
+import { useEffect, useState } from 'react';
+import { Track } from '@/types';
 
-export default function Multiselect() {
+export default function Multiselect({ list }: { list: Track[] | undefined }) {
   const ableSelect = useSelectedStore((state) => state.ableSelect);
   const setAbleSelect = useSelectedStore((state) => state.setAbleSelect);
   const setSelected = useSelectedStore((state) => state.setSelected);
   const selected = useSelectedStore((state) => state.selected);
   const openModal = useModalStore((state) => state.openModal);
-  const list = useTrackStore((state) => state.tracks);
 
   const [allSelected, setAllSelected] = useState(false);
 
@@ -29,8 +28,8 @@ export default function Multiselect() {
   };
 
   const onDelete = () => {
-    if(!selected.length) return
-    openModal("deleteMulti", selected);
+    if (!selected.length) return;
+    openModal('deleteMulti', selected);
     setAbleSelect(false);
     setSelected([]);
   };
@@ -40,6 +39,9 @@ export default function Multiselect() {
       setSelected([]);
       setAllSelected(false);
     } else {
+      if (!list) {
+        return;
+      }
       setSelected(list.map((el) => el.id));
       setAllSelected(true);
     }
@@ -51,12 +53,12 @@ export default function Multiselect() {
         <button
           onClick={toggleSelect}
           className={`${buttonClass} ${
-            ableSelect && "bg-cancel hover:bg-cancel-hover"
+            ableSelect && 'bg-cancel hover:bg-cancel-hover'
           }`}
           type="button"
           data-testid="select-mode-toggle"
         >
-          {ableSelect ? "Cancel" : "Select mode"}
+          {ableSelect ? 'Cancel' : 'Select mode'}
         </button>
       </li>
       {ableSelect && (

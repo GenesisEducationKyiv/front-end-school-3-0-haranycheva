@@ -1,40 +1,20 @@
-import useTrackStore from '@/store/tracksStore';
-import { useEffect, useState } from 'react';
 import { useGetSearchParams } from './useGetSearchParams';
-import { getTracks } from '@/api/tracks/getTracks';
-import { Filters } from '@/types';
+import { useTracks } from './queries/useTracks';
 
 export const useInitialFetch = () => {
-  const [maxPage, setMaxPage] = useState(0);
-  const setTrackList = useTrackStore((state) => state.setTracks);
-  const setLoading = useTrackStore((state) => state.setLoading);
   const { search, artist, genre, sort, order, page } = useGetSearchParams();
+  const { data } = useTracks({
+    search,
+    artist,
+    genre,
+    sort,
+    order,
+    page,
+  });
+  const maxPage = data ? Math.ceil(data.meta.total / data.meta.limit) : 0;
 
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      const data = await getTracks({
-        search,
-        artist,
-        genre,
-        sort,
-        order,
-        page,
-      });
-      data.match(
-        (res) => {
-          console.log(res)
-          setTrackList(res.data);
-          setMaxPage(Math.ceil(res.meta.total / res.meta.limit));
-        },
-        (error) => {
-          console.error('Failed to fetch tracks:', error);
-        }
-      );
-      setLoading(false);
-    }
-    fetchData();
-  }, [search, artist, genre, sort, order, page, setLoading, setTrackList]);
-
-  return maxPage;
+  return {
+    maxPage,
+    data: data?.data
+  };
 };

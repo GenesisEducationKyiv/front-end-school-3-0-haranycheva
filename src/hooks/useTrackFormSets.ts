@@ -1,16 +1,12 @@
-import { summonToast } from '@/helpers/summonToast';
-import trackSchema from '@/types/models/track/CreateTrackSchema';
 import useModalStore from '@/store/modalStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import useTrackStore from '@/store/tracksStore';
-import { createTrack } from '@/api/tracks/createTrack';
-import { editTrack } from '@/api/tracks/editTrack';
 import { CreateTrackSchema, FormType, Track, type Genre } from '@/types';
 import { z } from 'zod';
 import { useMemo } from 'react';
-import { handleEdit } from '@/helpers/trackForm/handleEdit';
-import { handleCreate } from '@/helpers/trackForm/handleCreate';
+import { useCreateTrack } from './queries/useCreateTrack';
+import { useEditTrack } from './queries/useEditTrack';
+import { summonToast } from '@/helpers/summonToast';
 
 type FormData = z.infer<typeof CreateTrackSchema>;
 
@@ -26,7 +22,8 @@ export const useTrackFormSets = (type: FormType, defaults: Track | null) => {
     [defaults]
   );
 
-  const { tracks: list, setTracks: setTrackList, setLoading } = useTrackStore();
+  const { mutateAsync: createTrack } = useCreateTrack();
+  const { mutateAsync: editTrack } = useEditTrack ();
   const closeModal = useModalStore((state) => state.closeModal);
 
   const {
@@ -40,30 +37,31 @@ export const useTrackFormSets = (type: FormType, defaults: Track | null) => {
     resolver: zodResolver(CreateTrackSchema, { async: true }),
   });
 
-  const submit = async (data: FormData) => {
-    const payload = {
-      ...data,
-      genres: data.genres.map(({ value }) => value),
-    };
-    closeModal();
-    setLoading(true);
-    try {
-      if (type === 'edit') {
-        if (!defaults) throw new Error('defaults properties are missing');
-        handleEdit(defaults.id, payload, list, setTrackList);
-      } else {
-        handleCreate(payload, list, setTrackList);
-      }
-    } catch (e) {
-      if (e instanceof Error) {
-        console.error(e.message);
-      } else {
-        console.error('Unknown error', e);
-      }
-    } finally {
-      reset();
-      setLoading(false);
-    }
+  
+const submit = async (data: FormData) => {
+  const payload = {
+    ...data,
+    genres: data.genres.map(({ value }) => value),
   };
+
+  try {
+    if (type === 'edit') {
+      if (!defaults) throw new Error('defaults properties are missing');
+      await summonToast(() => editTrack({ id: defaults.id, payload }), [], {
+        loading: 'Updating track...',
+        success: 'Track updated',
+      });
+    } else if (type === 'create'){
+      await summonToast(() => createTrack(payload), [], {
+        loading: 'Creating track...',
+        success: 'Track created',
+      });
+    }
+    closeModal();
+    reset();
+  } catch (e) {
+    console.error('Submit error', e);
+  }
+};
   return { submit, register, handleSubmit, control, errors };
 };
