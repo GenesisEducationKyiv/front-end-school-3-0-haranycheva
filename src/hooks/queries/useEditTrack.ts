@@ -1,8 +1,8 @@
 import { editTrack } from '@/api/tracks/editTrack';
-import { queryClient } from '@/components/widgets/MyQueryProvider';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useEditTrack = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: any }) =>
       editTrack(id, payload),

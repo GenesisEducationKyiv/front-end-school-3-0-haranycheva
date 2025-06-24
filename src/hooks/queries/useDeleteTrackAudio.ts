@@ -1,8 +1,8 @@
 import { deleteFile } from '@/api/tracks/deleteFile';
-import { queryClient } from '@/components/widgets/MyQueryProvider';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useDeleteTrackAudio = () => {
+     const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => deleteFile(id),
     onSuccess: () => {

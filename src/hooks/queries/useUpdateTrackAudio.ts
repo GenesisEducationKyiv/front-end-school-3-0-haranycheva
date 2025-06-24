@@ -1,8 +1,8 @@
 import { pushFile } from '@/api/tracks/pushFile';
-import { queryClient } from '@/components/widgets/MyQueryProvider';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useUpdateTrackAudio = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, formData }: { id: string; formData: FormData }) =>
       pushFile(id, formData),
