@@ -1,13 +1,11 @@
 import { buttonClass } from '@/style/classes/button';
-import { summonToast } from '@/helpers/summonToast';
-import { deleteFile } from '@/api/tracks/deleteFile';
-import { pushFile } from '@/api/tracks/pushFile';
 import useModalStore from '@/store/modalStore';
-import useTrackStore from '@/store/tracksStore';
 import { ArrowUpTrayIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { AudioInfo, DefaultsProps, Track } from '@/types';
+import { AudioInfo } from '@/types';
+import { useUpdateTrackAudio } from '@/hooks/queries/useUpdateTrackAudio';
+import { useDeleteTrackAudio } from '@/hooks/queries/useDeleteTrackAudio';
 import { handleDelete } from '@/helpers/audioForm/handleDelete';
 import { handleUpdate } from '@/helpers/audioForm/handleUpdate';
 
@@ -21,29 +19,26 @@ type UploadFileFormProps = {
 
 export default function UploadFileForm({ defaults }: UploadFileFormProps) {
   const { register, handleSubmit, watch } = useForm<FormData>({});
-  const [audioSrc, setAudioSrc] = useState(defaults?.audioFile ?? "");
+  const [audioSrc, setAudioSrc] = useState(defaults?.audioFile ?? '');
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const closeModal = useModalStore((state) => state.closeModal);
-  const list = useTrackStore((state) => state.tracks);
-  const setTrackList = useTrackStore((state) => state.setTracks);
+  const { mutateAsync: updateAudio } = useUpdateTrackAudio();
+  const { mutateAsync: deleteAudio } = useDeleteTrackAudio();
 
   const watchFile = watch('audio');
-
   const onSubmit = async (data: FormData) => {
-    if (!defaults) return null;
-
     const file = data.audio?.[0];
+    const id = defaults.id;
 
-    if (file) {
-      const formData = new FormData();
-      formData.append('audio', file);
+      if (file) {
+        const formData = new FormData();
+        formData.append('audio', file);
+        handleUpdate(id, formData, updateAudio)
+      } else if (!file && defaults?.audioFile) {
+        handleDelete(id, deleteAudio)
+      }
       closeModal();
-      handleUpdate(defaults.id, list, formData, setTrackList);
-    } else if (!file && defaults?.audioFile) {
-      closeModal();
-      handleDelete(defaults.id, list, setTrackList);
-    }
   };
 
   useEffect(() => {

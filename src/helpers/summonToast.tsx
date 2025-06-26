@@ -10,7 +10,6 @@ export const summonToast = async <T,>(
   params: any[],
   text: ToastText
 ): Promise<T | undefined> => {
-  try {
     return await toast.promise(
       asyncFn(...params),
       {
@@ -19,8 +18,5 @@ export const summonToast = async <T,>(
         error: <b>Something went wrong...</b>,
       }
     );
-  } catch (err) {
-    throw err;
-  }
 };
 
