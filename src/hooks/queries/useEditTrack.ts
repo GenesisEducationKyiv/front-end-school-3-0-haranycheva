@@ -1,14 +1,12 @@
 import { editTrack } from '@/api/tracks/editTrack';
 import { TrackData } from '@/types';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+import { useInvalidateTracks } from './useInvalidateQueries';
 
 export const useEditTrack = () => {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: TrackData }) =>
       editTrack(id, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tracks'] });
-    },
+    onSuccess: useInvalidateTracks(),
   });
 };

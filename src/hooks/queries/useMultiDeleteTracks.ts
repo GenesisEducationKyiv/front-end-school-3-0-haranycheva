@@ -1,14 +1,10 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { multiDelete } from '@/api/tracks/multiDelete';
+import { useInvalidateTracks } from './useInvalidateQueries';
 
 export const useMultiDeleteTracks = () => {
- const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (ids: string[]) => multiDelete(ids),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['tracks'],
-      });
-    },
+    onSuccess: useInvalidateTracks()
   });
 };

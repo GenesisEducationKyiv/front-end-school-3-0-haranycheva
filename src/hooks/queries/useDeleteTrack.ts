@@ -1,12 +1,10 @@
 import { deleteTrack } from '@/api/tracks/deleteTrack';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+import { useInvalidateTracks } from './useInvalidateQueries';
 
 export const useDeleteTrack = () => {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => deleteTrack(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tracks'] });
-    },
+    onSuccess: useInvalidateTracks(),
   });
 };

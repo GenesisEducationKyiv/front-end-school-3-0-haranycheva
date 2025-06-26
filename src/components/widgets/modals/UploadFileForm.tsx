@@ -3,10 +3,11 @@ import useModalStore from '@/store/modalStore';
 import { ArrowUpTrayIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { AudioInfo, DefaultsProps, Track } from '@/types';
-import { summonToast } from '@/helpers/summonToast';
+import { AudioInfo } from '@/types';
 import { useUpdateTrackAudio } from '@/hooks/queries/useUpdateTrackAudio';
 import { useDeleteTrackAudio } from '@/hooks/queries/useDeleteTrackAudio';
+import { handleDelete } from '@/helpers/audioForm/handleDelete';
+import { handleUpdate } from '@/helpers/audioForm/handleUpdate';
 
 type FormData = {
   audio?: FileList;
@@ -30,24 +31,14 @@ export default function UploadFileForm({ defaults }: UploadFileFormProps) {
     const file = data.audio?.[0];
     const id = defaults.id;
 
-    try {
       if (file) {
         const formData = new FormData();
         formData.append('audio', file);
-        await summonToast(() => updateAudio({ id, formData }), [], {
-          loading: 'Uploading audio...',
-          success: 'Audio uploaded!',
-        });
+        handleUpdate(id, formData, updateAudio)
       } else if (!file && defaults?.audioFile) {
-        await summonToast(() => deleteAudio(id), [], {
-          loading: 'Removing audio...',
-          success: 'Audio removed!',
-        });
+        handleDelete(id, deleteAudio)
       }
       closeModal();
-    } catch (err) {
-      console.error('Error submitting audio form:', err);
-    }
   };
 
   useEffect(() => {

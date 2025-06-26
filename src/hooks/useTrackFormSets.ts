@@ -6,7 +6,8 @@ import { z } from 'zod';
 import { useMemo } from 'react';
 import { useCreateTrack } from './queries/useCreateTrack';
 import { useEditTrack } from './queries/useEditTrack';
-import { summonToast } from '@/helpers/summonToast';
+import { createTrackWithToast } from '@/helpers/trackForm/createTrackWithToast';
+import { editTrackWithToast } from '@/helpers/trackForm/editTrackWithToast';
 
 type FormData = z.infer<typeof CreateTrackSchema>;
 
@@ -44,24 +45,14 @@ const submit = async (data: FormData) => {
     genres: data.genres.map(({ value }) => value),
   };
 
-  try {
     if (type === 'edit') {
       if (!defaults) throw new Error('defaults properties are missing');
-      await summonToast(() => editTrack({ id: defaults.id, payload }), [], {
-        loading: 'Updating track...',
-        success: 'Track updated',
-      });
+      editTrackWithToast(defaults.id, payload, editTrack)
     } else if (type === 'create'){
-      await summonToast(() => createTrack(payload), [], {
-        loading: 'Creating track...',
-        success: 'Track created',
-      });
+      createTrackWithToast(payload, createTrack)
     }
     closeModal();
     reset();
-  } catch (e) {
-    console.error('Submit error', e);
-  }
 };
   return { submit, register, handleSubmit, control, errors };
 };
