@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createTrack } from '@/api/tracks/createTrack';
 
 export const useCreateTrack = () => {
-     const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: createTrack,
     onSuccess: () => {
