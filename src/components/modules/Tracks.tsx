@@ -7,11 +7,13 @@ import SearchForm from "@/components/widgets/tracks/SearchForm";
 import Pagination from "@/components/widgets/tracks/Pagination";
 import Multiselect from "@/components/widgets/tracks/MultiSelect";
 import { useInitialFetch } from "@/hooks/useInitialFetch";
+import { ActiveTrack } from "../widgets/tracks/ActiveTrack";
 
 export default function Tracks() {
   const {maxPage, data} = useInitialFetch()
   return (
     <div className="pb-10">
+      <ActiveTrack />
       <SearchForm />
       <Multiselect list={data}/>
       <TrackList />
