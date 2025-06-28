@@ -14,8 +14,7 @@ export function ActiveTrack() {
   useEffect(() => {
     (async () => {
       const activeTrack = await getActiveTrack();
-      console.log(activeTrack);
-
+      
       if (activeTrack) {
         setTrack(activeTrack);
       }

@@ -1,3 +1,4 @@
+import { API_ENDPOINTS } from "../apiEndpoints";
 import axios from "../axiosSets";
 
 type MultiDeleteResult = {
@@ -7,6 +8,6 @@ type MultiDeleteResult = {
 
 
 export const multiDelete = async (ids: string[]) : Promise<MultiDeleteResult> => {
-    const res = await axios.post(`tracks/delete`, {ids})
+    const res = await axios.post(`${API_ENDPOINTS.TRACKS}/delete`, {ids})
     return res.data
 };
