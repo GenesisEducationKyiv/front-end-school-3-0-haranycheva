@@ -1,6 +1,7 @@
 import { type ApiResult, Filters, Track } from "@/types";
 import axios from "../axiosSets";
 import {err, ok } from "neverthrow";
+import { API_ENDPOINTS } from "../apiEndpoints";
 
 export type TrackData = {
   data: Track[]
@@ -21,7 +22,7 @@ export const getTracks = async (query: Filters): ApiResult<TrackData> => {
       }
     });
 
-    const res = await axios.get(`/tracks?limit=12${url}`);
+    const res = await axios.get(`${API_ENDPOINTS.TRACKS}?limit=12${url}`);
     return ok(res.data);
   } catch (error: any) {
     return err(error); 
