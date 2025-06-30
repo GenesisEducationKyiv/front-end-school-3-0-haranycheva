@@ -1,31 +1,37 @@
-import { z } from 'zod';
+import {
+  object,
+  string,
+  array,
+  instanceof as zInstanceof,
+  ZodIssueCode,
+} from 'zod';
 
-const trackSchema = z
-  .object({
-    artist: z.string().min(1, { message: 'Artist is required' }).max(25),
-    title: z.string().min(1, { message: 'Title is required' }).max(25),
-    album: z.string().max(25).optional(),
-    coverImage: z.string(),
-    file: z.instanceof(File).optional(),
-    genres: z
-      .array(z.object({ label: z.string(), value: z.string() }))
-      .min(1, { message: 'At least one genre must be selected' }),
-  })
-  .superRefine(async (val, ctx) => {
-    const url = val.coverImage.trim();
 
-    if (!url) return;
+const trackSchema = object({
+  artist: string().min(1, { message: 'Artist is required' }).max(25),
+  title: string().min(1, { message: 'Title is required' }).max(25),
+  album: string().max(25).optional(),
+  coverImage: string(),
+  file: zInstanceof(File).optional(),
+  genres: array(object({ label: string(), value: string() })).min(1, {
+    message: 'At least one genre must be selected',
+  }),
+}).superRefine(async (val, ctx) => {
+  const url = val.coverImage.trim();
 
-    const isValidImage = await isImageUrl(url);
+  if (!url) return;
 
-    if (!isValidImage) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'URL does not point to a valid image',
-        path: ['coverImage'],
-      });
-    }
-  });
+  const isValidImage = await isImageUrl(url);
+
+  if (!isValidImage) {
+    ctx.addIssue({
+      code: ZodIssueCode.custom,
+      message: 'URL does not point to a valid image',
+      path: ['coverImage'],
+    });
+  }
+});
+
 
 async function isImageUrl(url: string): Promise<boolean> {
   try {
