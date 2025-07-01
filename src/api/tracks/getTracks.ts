@@ -21,8 +21,6 @@ export const getTracks = async (query: Filters): ApiResult<TrackData> => {
         url += `&${key}=${value}`;
       }
     });
-
-    console.log(process.env);
     
 
     const res = await axios.get(`${API_ENDPOINTS.TRACKS}?limit=12${url}`);
