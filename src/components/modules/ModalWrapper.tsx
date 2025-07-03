@@ -11,13 +11,15 @@ const UploadFileForm = dynamic(() => import('@/components/widgets/modals/UploadF
 const DeleteTrackModal = dynamic(() => import('@/components/widgets/modals/DeleteTrackModal'));
 const MultiDeleteModal = dynamic(() => import('@/components/widgets/modals/MultiDeleteModal'));
 
+type ModalType = "create" | "edit" | "file" | "delete" | "deleteMulti"
+
 export default function ModalWrapper() {
   const closeModal = useModalStore((state) => state.closeModal);
   const modalType = useModalStore((state) => state.type);
   const defaults = useModalStore((state) => state.info);
 
 
- const modalComponents: Record<string, (() => JSX.Element | null) | undefined> = useMemo(() => ({
+ const modalComponents: Record<ModalType, (() => JSX.Element | null) | undefined> = useMemo(() => ({
     create: () => <TrackForm type="create" defaults={null} />,
     edit: isTrack(defaults) ? () => <TrackForm type="edit" defaults={defaults} /> : undefined,
     file: isAudioInfo(defaults) ? () => <UploadFileForm defaults={defaults} /> : undefined,
