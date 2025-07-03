@@ -43,9 +43,14 @@ const SearchForm = () => {
       ).forEach((key) => {
         const newValue = values[key];
         const oldValue = searchParams.get(key) || '';
-        if (newValue !== oldValue) filterChanged = true;
-        if (newValue) params.set(key, newValue);
-        else params.delete(key);
+        if (newValue !== oldValue) {
+          filterChanged = true;
+        }
+        if (newValue) {
+          params.set(key, newValue);
+        } else {
+          params.delete(key);
+        }
       });
 
       if (filterChanged) params.set('page', '1');
