@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    uses: ./.github/workflows/setup-node.yml
+
+    steps:
+      - name: Run ESLint
+        run: npm run lint
+
+  typecheck:
+    uses: ./.github/workflows/setup-node.yml
+
+    steps:
+      - name: Run TypeScript check
+        run: npm run typecheck
+
+  build:
+    needs: [lint, typecheck]
+    uses: ./.github/workflows/setup-node.yml
+
+    steps:
+      - name: Build project
+        run: npm run build
+
+  test:
+    needs: [lint, typecheck]
+    uses: ./.github/workflows/setup-node.yml
+
+    steps:
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
