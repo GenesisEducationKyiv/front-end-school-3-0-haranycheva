@@ -1,17 +1,17 @@
-import { type ApiResult, Filters, Track } from "@/types";
-import axios from "../axiosSets";
-import {err, ok } from "neverthrow";
-import { API_ENDPOINTS } from "../apiEndpoints";
+import { type ApiResult, Filters, Track } from '@/types';
+import axios from '../axiosSets';
+import { err, ok } from 'neverthrow';
+import { API_ENDPOINTS } from '../apiEndpoints';
 
 export type TrackData = {
-  data: Track[]
+  data: Track[];
   meta: {
-    limit: number
-    page: number
-    total: number
-    totalPages: number
-  }
-}
+    limit: number;
+    page: number;
+    total: number;
+    totalPages: number;
+  };
+};
 
 export const getTracks = async (query: Filters): ApiResult<TrackData> => {
   try {
@@ -21,10 +21,11 @@ export const getTracks = async (query: Filters): ApiResult<TrackData> => {
         url += `&${key}=${value}`;
       }
     });
+    
 
     const res = await axios.get(`${API_ENDPOINTS.TRACKS}?limit=12${url}`);
     return ok(res.data);
   } catch (error: any) {
-    return err(error); 
+    return err(error);
   }
 };

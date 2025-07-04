@@ -2,12 +2,16 @@
 
 import useModalStore from '@/store/modalStore';
 import { XCircleIcon } from '@heroicons/react/24/outline';
-import UploadFileForm from '@/components/widgets/modals/UploadFileForm';
-import DeleteTrackModal from '@/components/widgets/modals/DeleteTrackModal';
-import MultiDeleteModal from '@/components/widgets/modals/MultiDeleteModal';
-import TrackForm from '../widgets/modals/TrackForm';
 import { isAudioInfo, isStringArray, isTrack, ModalStore } from '@/types';
-import { JSX } from 'react';
+import { JSX, useMemo } from 'react';
+import dynamic from 'next/dynamic';
+
+const TrackForm = dynamic(() => import('../widgets/modals/TrackForm'));
+const UploadFileForm = dynamic(() => import('@/components/widgets/modals/UploadFileForm'));
+const DeleteTrackModal = dynamic(() => import('@/components/widgets/modals/DeleteTrackModal'));
+const MultiDeleteModal = dynamic(() => import('@/components/widgets/modals/MultiDeleteModal'));
+
+type ModalType = "create" | "edit" | "file" | "delete" | "deleteMulti"
 
 export default function ModalWrapper() {
   const closeModal = useModalStore((state) => state.closeModal);
@@ -15,17 +19,13 @@ export default function ModalWrapper() {
   const defaults = useModalStore((state) => state.info);
 
 
-  const modalComponents: Record<string, JSX.Element | null> = {
-    create: <TrackForm type="create" defaults={null} />,
-    edit: isTrack(defaults) ? (
-      <TrackForm type="edit" defaults={defaults} />
-    ) : null,
-    file: isAudioInfo(defaults) ? <UploadFileForm defaults={defaults} /> : null,
-    delete: isTrack(defaults) ? <DeleteTrackModal defaults={defaults} /> : null,
-    deleteMulti: isStringArray(defaults) ? (
-      <MultiDeleteModal defaults={defaults} />
-    ) : null,
-  };
+ const modalComponents: Record<ModalType, (() => JSX.Element | null) | undefined> = useMemo(() => ({
+    create: () => <TrackForm type="create" defaults={null} />,
+    edit: isTrack(defaults) ? () => <TrackForm type="edit" defaults={defaults} /> : undefined,
+    file: isAudioInfo(defaults) ? () => <UploadFileForm defaults={defaults} /> : undefined,
+    delete: isTrack(defaults) ? () => <DeleteTrackModal defaults={defaults} /> : undefined,
+    deleteMulti: isStringArray(defaults) ? () => <MultiDeleteModal defaults={defaults} /> : undefined,
+  }), [defaults]);
 
   return modalType ? (
     <div
@@ -43,7 +43,7 @@ export default function ModalWrapper() {
           <XCircleIcon className="h-8 w-8 text-blue-400" />
         </button>
 
-        {modalType && modalComponents[modalType]}
+        {modalType && modalComponents[modalType]?.()}
       </div>
     </div>
   ) : null;

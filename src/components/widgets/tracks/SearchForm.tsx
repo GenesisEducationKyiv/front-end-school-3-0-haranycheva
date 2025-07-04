@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import debounce from 'lodash.debounce';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
@@ -18,14 +18,14 @@ type FormValues = {
 const SearchForm = () => {
   const params = useGetSearchParams();
 
-  const { register, control, setValue, handleSubmit, watch } = useForm<FormValues>({
-  defaultValues: {
-    search: params.search,
-    artist: params.artist,
-    genre: params.genre,
-    sort: params.sort,
-    order: params.order,
-  },
+  const { register, control, handleSubmit, watch } = useForm<FormValues>({
+    defaultValues: {
+      search: params.search ?? '',
+      artist: params.artist ?? '',
+      genre: params.genre ?? '',
+      sort: params.sort ?? '',
+      order: params.order ?? '',
+    },
   });
 
   const router = useRouter();
@@ -33,10 +33,9 @@ const SearchForm = () => {
   const searchParams = useSearchParams();
   const { data: genres = [], isLoading: loadingGenres } = useGenres();
 
-  const debouncedUpdateURL = useCallback(
-    debounce((values: FormValues) => {
+  const updateURL = useCallback(
+    (values: FormValues) => {
       const params = new URLSearchParams(searchParams.toString());
-
       let filterChanged = false;
 
       (
@@ -53,23 +52,34 @@ const SearchForm = () => {
           params.delete(key);
         }
       });
-      if (filterChanged) {
-        params.set('page', '1');
-      }
+
+      if (filterChanged) params.set('page', '1');
+
       const newUrl = `${pathname}?${params.toString()}`;
       router.push(newUrl);
-    }, 500),
+    },
     [pathname, router, searchParams]
+  );
+
+  const debouncedUpdateURL = useMemo(
+    () => debounce(updateURL, 500),
+    [updateURL]
   );
 
   useEffect(() => {
     const subscription = watch((values) => {
-      debouncedUpdateURL(values);
+      debouncedUpdateURL({
+        search: values.search ?? '',
+        artist: values.artist ?? '',
+        genre: values.genre ?? '',
+        sort: values.sort ?? '',
+        order: values.order ?? '',
+      });
     });
-      return () => {
-    subscription.unsubscribe();
-    debouncedUpdateURL.cancel(); 
-  };
+    return () => {
+      subscription.unsubscribe();
+      debouncedUpdateURL.cancel();
+    };
   }, [watch, debouncedUpdateURL]);
 
   return (
