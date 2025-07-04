@@ -2,14 +2,14 @@
   "name": "music-track",
   "version": "0.1.0",
   "private": true,
-"scripts": {
-    "dev": "npx next dev",          
-    "build": "npx next build",        
-    "start": "npx next build && npx next start", 
-    "lint": "npx next lint",           
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next build && next start",
+    "lint": "next lint",
     "test": "jest",
     "e2e": "playwright test",
-    "analyze": "ANALYZE=true npx next build", 
+    "analyze": "ANALYZE=true next build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

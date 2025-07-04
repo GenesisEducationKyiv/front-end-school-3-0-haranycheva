@@ -2,124 +2,106 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    outputs:
-      cache-hit: ${{ steps.cache.outputs.cache-hit }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js for setup job
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-
-      - name: Cache node_modules
-        id: cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
-
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
-
-      - name: Upload node_modules
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-modules
-          path: node_modules/
-
   lint:
     runs-on: ubuntu-latest
-    needs: setup
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Download node_modules
-        uses: actions/download-artifact@v4
+      - name: Cache node_modules
+        uses: actions/cache@v3
         with:
-          name: node-modules
-          path: node_modules/
-
-      - name: Set up Node.js for lint
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
-          cache: 'npm'
+          node-version: 22.15.0
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Run ESLint
         run: npm run lint
 
   typecheck:
     runs-on: ubuntu-latest
-    needs: setup
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Download node_modules
-        uses: actions/download-artifact@v4
+      - name: Cache node_modules
+        uses: actions/cache@v3
         with:
-          name: node-modules
-          path: node_modules/
-
-      - name: Set up Node.js for typecheck
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: 22.15.0
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Run TypeScript check
         run: npm run typecheck
 
   build:
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, setup]
+    needs: [ lint, typecheck ]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Download node_modules
-        uses: actions/download-artifact@v4
+      - name: Cache node_modules
+        uses: actions/cache@v3
         with:
-          name: node-modules
-          path: node_modules/
-
-      - name: Set up Node.js for build
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: 22.15.0
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build project
         run: npm run build
 
   test:
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, setup]
+    needs: [ lint, typecheck ]
+    timeout-minutes: 60
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Download node_modules
-        uses: actions/download-artifact@v4
+      - name: Cache node_modules
+        uses: actions/cache@v3
         with:
-          name: node-modules
-          path: node_modules/
-
-      - name: Set up Node.js for test
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: 22.15.0
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Run unit tests
         run: npm run test
