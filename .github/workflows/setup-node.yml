@@ -1,0 +1,29 @@
+name: Setup Node Environment
+
+on:
+  workflow_call:
+    inputs:
+      script:
+        required: true
+        type: string
+
+jobs:
+  setup-node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.15.0
+
+      - run: npm ci
+
+      - run: ${{ inputs.script }}
