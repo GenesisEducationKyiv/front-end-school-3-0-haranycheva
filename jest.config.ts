@@ -17,6 +17,7 @@ const config: Config = {
   },
 
   transformIgnorePatterns: ['/node_modules/(?!react-select)'],
+  testPathIgnorePatterns: ['<rootDir>/src/tests/e2e/'],
 };
 
 export default config;
