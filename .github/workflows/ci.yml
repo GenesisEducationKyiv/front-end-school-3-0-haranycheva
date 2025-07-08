@@ -55,6 +55,6 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: next-build
-          path: app
+          path: .
 
-      - run: docker build -t my-app:latest app
+      - run: docker build -t my-app:latest .
