@@ -1,7 +1,7 @@
 "use client";
 
 import useModalStore from "@/store/modalStore";
-import { AudioInfo, Track } from "@/types";
+import { Track } from "@/types";
 import {
   ArrowUpTrayIcon,
   TrashIcon,

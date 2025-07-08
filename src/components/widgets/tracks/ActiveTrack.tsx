@@ -8,7 +8,7 @@ import io from 'socket.io-client';
 
 const socket = io(process.env.NEXT_PUBLIC_BASE_URL);
 
-export function ActiveTrack() {
+const ActiveTrack = () => {
   const [track, setTrack] = useState<Track | null>(null);
 
   useEffect(() => {
@@ -53,8 +53,7 @@ export function ActiveTrack() {
         </ul>
         <Image
           src={track.coverImage || '/no-image.jpg'}
-          placeholder="blur"
-          blurDataURL={track.coverImage || '/no-image.jpg'}
+          placeholder="empty"
           alt="Track cover"
           width={100}
           height={100}
@@ -64,3 +63,5 @@ export function ActiveTrack() {
     </div>
   );
 }
+
+export default ActiveTrack

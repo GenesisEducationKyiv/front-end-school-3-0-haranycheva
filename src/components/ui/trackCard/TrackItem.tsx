@@ -25,13 +25,7 @@ export default function TrackItem({
   const [fileSrc, setFileSrc] = useState<string | undefined>(undefined);
   const selected = useSelectedStore((state) => state.selected);
   const ableSelect = useSelectedStore((state) => state.ableSelect);
-  const [isSelected, setIsSelected] = useState(
-    selected.some((el) => el === track.id)
-  );
-
-  useEffect(() => {
-    setIsSelected(selected.some((el) => el === track.id));
-  }, [selected, track.id]);
+  const isSelected = selected.includes(track.id);
 
   useEffect(() => {
     if (!track?.audioFile) {
@@ -59,8 +53,7 @@ export default function TrackItem({
       <div className="mb-2 relative">
         <Image
           src={track.coverImage || '/no-image.jpg'}
-          placeholder="blur"
-          blurDataURL={track.coverImage || '/no-image.jpg'}
+          placeholder="empty"
           alt="Track cover"
           width={200}
           height={200}

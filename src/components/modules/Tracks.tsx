@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getTracks } from "@/api/tracks/getTracks";
 import TrackList from "@/components/widgets/tracks/TrackList";
 import SearchForm from "@/components/widgets/tracks/SearchForm";
 import Pagination from "@/components/widgets/tracks/Pagination";
 import Multiselect from "@/components/widgets/tracks/MultiSelect";
 import { useInitialFetch } from "@/hooks/useInitialFetch";
-import { ActiveTrack } from "../widgets/tracks/ActiveTrack";
+import dynamic from "next/dynamic";
+
+const ActiveTrack = dynamic(() => import('@/components/widgets/tracks/ActiveTrack'), {
+  ssr: false,
+  loading: () => <p className="text-white p-4">Loading active track...</p>,
+});
 
 export default function Tracks() {
   const {maxPage, data} = useInitialFetch()
