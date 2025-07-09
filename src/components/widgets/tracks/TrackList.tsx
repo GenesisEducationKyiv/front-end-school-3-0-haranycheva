@@ -36,12 +36,13 @@ export default function TrackList() {
 
   return (
     <ul className="flex flex-wrap gap-15 justify-center pt-10 items-center">
-      {list.map((el) => (
+      {list.map((el, i) => (
         <TrackItem
           key={el.id}
           track={el}
           playing={isPlaying}
           setIsPlaying={setIsPlaying}
+          index={i}
         />
       ))}
     </ul>

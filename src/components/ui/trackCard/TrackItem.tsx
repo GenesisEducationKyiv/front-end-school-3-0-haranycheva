@@ -14,12 +14,14 @@ interface TrackItemProps {
   track: Track;
   playing: string | null;
   setIsPlaying: (id: string | null) => void;
+  index: number;
 }
 
 export default function TrackItem({
   track,
   playing,
   setIsPlaying,
+  index,
 }: TrackItemProps) {
   const isPlaying = playing === track.id;
   const [fileSrc, setFileSrc] = useState<string | undefined>(undefined);
@@ -53,10 +55,14 @@ export default function TrackItem({
       <div className="mb-2 relative">
         <Image
           src={track.coverImage || '/no-image.jpg'}
-          placeholder="empty"
+          placeholder="blur"
+          blurDataURL="/blur.webp"
           alt="Track cover"
           width={200}
           height={200}
+          quality={75}
+          loading={index < 3 ? 'eager' : 'lazy'} 
+          priority={index < 3}
           className="rounded-[5px] block w-[200px] h-[200px]"
         />
         <ul className="child absolute top-1 left-1 flex gap-[2px] max-w-[80%] flex-wrap opacity-0  transition-opacity duration-200">

@@ -1,12 +1,10 @@
 'use client';
 
 import { getActiveTrack } from '@/api/tracks/getActiveTrack';
-import { Track, TrackData } from '@/types';
+import { Track } from '@/types';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
-
-const socket = io(process.env.NEXT_PUBLIC_BASE_URL);
 
 const ActiveTrack = () => {
   const [track, setTrack] = useState<Track | null>(null);
@@ -14,7 +12,7 @@ const ActiveTrack = () => {
   useEffect(() => {
     (async () => {
       const activeTrack = await getActiveTrack();
-      
+
       if (activeTrack) {
         setTrack(activeTrack);
       }
@@ -23,6 +21,10 @@ const ActiveTrack = () => {
     const handleActiveTrackUpdate = (data: Track) => {
       setTrack(data);
     };
+
+    const socket = io(process.env.NEXT_PUBLIC_BASE_URL);
+
+    socket.on('activeTrack:updated', handleActiveTrackUpdate);
 
     socket.on('activeTrack:updated', handleActiveTrackUpdate);
 
@@ -40,7 +42,7 @@ const ActiveTrack = () => {
         <p className="text-zinc-200 text-2xl">{track.title}</p>
         <p className="text-zinc-400 text-lg">{track.artist}</p>
       </div>
-      <div className='flex gap-[30px]'>
+      <div className="flex gap-[30px]">
         <ul className=" flex gap-[2px] max-w-[80%] flex-wrap ">
           {track.genres.map((el) => (
             <li
@@ -62,6 +64,6 @@ const ActiveTrack = () => {
       </div>
     </div>
   );
-}
+};
 
-export default ActiveTrack
+export default ActiveTrack;

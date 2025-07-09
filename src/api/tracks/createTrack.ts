@@ -1,4 +1,4 @@
-import { ApiResult, Track, TrackData } from "@/types";
+import { Track, TrackData } from "@/types";
 import axios from "../axiosSets";
 import { API_ENDPOINTS } from "../apiEndpoints";
 

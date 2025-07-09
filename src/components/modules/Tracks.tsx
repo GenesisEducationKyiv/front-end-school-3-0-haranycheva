@@ -12,15 +12,15 @@ const ActiveTrack = dynamic(() => import('@/components/widgets/tracks/ActiveTrac
   loading: () => <p className="text-white p-4">Loading active track...</p>,
 });
 
+
 export default function Tracks() {
-  const {maxPage, data} = useInitialFetch()
+  const {maxPage, data, isLoading} = useInitialFetch()
   return (
     <div className="pb-10">
-      <ActiveTrack />
       <SearchForm />
       <Multiselect list={data}/>
       <TrackList />
-      <Pagination maxPage={maxPage} />
+      {isLoading && <Pagination maxPage={maxPage} />}
     </div>
   );
 }
