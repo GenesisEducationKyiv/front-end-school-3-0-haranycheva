@@ -54,7 +54,7 @@ export default function TrackItem({
       {ableSelect && <Selected isSelected={isSelected} id={track.id} />}
       <div className="mb-2 relative">
         <Image
-          src={track.coverImage || '/no-image.jpg'}
+          src={track.coverImage || '/no-image.webp'}
           placeholder="blur"
           blurDataURL="/blur.webp"
           alt="Track cover"

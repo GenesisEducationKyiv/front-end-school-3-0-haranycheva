@@ -54,7 +54,7 @@ const ActiveTrack = () => {
           ))}
         </ul>
         <Image
-          src={track.coverImage || '/no-image.jpg'}
+          src={track.coverImage || '/no-image.webp'}
           placeholder="empty"
           alt="Track cover"
           width={100}

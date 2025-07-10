@@ -12,7 +12,7 @@ const testTrack: Track = {
   genres: ['rock', 'pop'],
   createdAt: new Date(),
   updatedAt: new Date(),
-  coverImage: '/no-image.jpg',
+  coverImage: '/no-image.webp',
   audioFile: '',
 };
 
@@ -21,7 +21,7 @@ describe('TrackItem', () => {
 
   test('renders track item with title and artist', () => {
     render(
-      <TrackItem track={testTrack} playing={null} setIsPlaying={setIsPlaying} />
+      <TrackItem index={1} track={testTrack} playing={null} setIsPlaying={setIsPlaying} />
     );
     expect(
       screen.getByTestId(`track-item-${testTrack.id}-title`)
@@ -33,7 +33,7 @@ describe('TrackItem', () => {
 
   test('renders all genres', () => {
     render(
-      <TrackItem track={testTrack} playing={null} setIsPlaying={setIsPlaying} />
+      <TrackItem index={1} track={testTrack} playing={null} setIsPlaying={setIsPlaying} />
     );
     testTrack.genres.forEach((genre) => {
       expect(screen.getByText(genre)).toBeInTheDocument();
@@ -44,18 +44,19 @@ describe('TrackItem', () => {
     const trackWithNoCover = { ...testTrack, coverImage: '' };
     render(
       <TrackItem
+      index={1}
         track={trackWithNoCover}
         playing={null}
         setIsPlaying={setIsPlaying}
       />
     );
     const img = screen.getByAltText('Track cover') as HTMLImageElement;
-    expect(img.src).toContain('no-image.jpg');
+    expect(img.src).toContain('no-image.webp');
   });
 
   test('does not render audio player and disables controls when audioFile is missing', () => {
     render(
-      <TrackItem track={testTrack} playing={null} setIsPlaying={setIsPlaying} />
+      <TrackItem index={1} track={testTrack} playing={null} setIsPlaying={setIsPlaying} />
     );
     const audio = screen.queryByTestId(`audio-player-${testTrack.id}`);
     const playBtn = screen.getByTestId(`play-button-${testTrack.id}`);
@@ -68,7 +69,7 @@ describe('TrackItem', () => {
 
   test('renders buttons with correct data-testid including delete button', () => {
     render(
-      <TrackItem track={testTrack} playing={null} setIsPlaying={setIsPlaying} />
+      <TrackItem index={1} track={testTrack} playing={null} setIsPlaying={setIsPlaying} />
     );
     expect(
       screen.getByTestId(`upload-track-${testTrack.id}`)
