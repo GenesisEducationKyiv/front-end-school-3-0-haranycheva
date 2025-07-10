@@ -19,10 +19,10 @@ export default function TrackList() {
     return (
       <div className="flex flex-col gap-5 justify-center items-center p-5">
         <Image
-          src="/cannot-find.png"
+          src="/cannot-find.webp"
           alt="Couldn`t find picture"
           placeholder="blur"
-          blurDataURL="/cannot-find.png"
+          blurDataURL="/blur.webp"
           width={300}
           height={300}
           className="rounded-[5px] block w-[300px] h-[300px]"
