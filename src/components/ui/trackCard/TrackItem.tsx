@@ -14,24 +14,20 @@ interface TrackItemProps {
   track: Track;
   playing: string | null;
   setIsPlaying: (id: string | null) => void;
+  isLoadedImediatly: boolean;
 }
 
 export default function TrackItem({
   track,
   playing,
   setIsPlaying,
+  isLoadedImediatly,
 }: TrackItemProps) {
   const isPlaying = playing === track.id;
   const [fileSrc, setFileSrc] = useState<string | undefined>(undefined);
   const selected = useSelectedStore((state) => state.selected);
   const ableSelect = useSelectedStore((state) => state.ableSelect);
-  const [isSelected, setIsSelected] = useState(
-    selected.some((el) => el === track.id)
-  );
-
-  useEffect(() => {
-    setIsSelected(selected.some((el) => el === track.id));
-  }, [selected, track.id]);
+  const isSelected = selected.includes(track.id);
 
   useEffect(() => {
     if (!track?.audioFile) {
@@ -58,12 +54,15 @@ export default function TrackItem({
       {ableSelect && <Selected isSelected={isSelected} id={track.id} />}
       <div className="mb-2 relative">
         <Image
-          src={track.coverImage || '/no-image.jpg'}
+          src={track.coverImage || '/no-image.webp'}
           placeholder="blur"
-          blurDataURL={track.coverImage || '/no-image.jpg'}
+          blurDataURL="/blur.webp"
           alt="Track cover"
           width={200}
           height={200}
+          quality={75}
+          loading={isLoadedImediatly ? 'eager' : 'lazy'} 
+          priority={isLoadedImediatly}
           className="rounded-[5px] block w-[200px] h-[200px]"
         />
         <ul className="child absolute top-1 left-1 flex gap-[2px] max-w-[80%] flex-wrap opacity-0  transition-opacity duration-200">

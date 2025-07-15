@@ -19,10 +19,10 @@ export default function TrackList() {
     return (
       <div className="flex flex-col gap-5 justify-center items-center p-5">
         <Image
-          src="/cannot-find.png"
+          src="/cannot-find.webp"
           alt="Couldn`t find picture"
           placeholder="blur"
-          blurDataURL="/cannot-find.png"
+          blurDataURL="/blur.webp"
           width={300}
           height={300}
           className="rounded-[5px] block w-[300px] h-[300px]"
@@ -36,12 +36,13 @@ export default function TrackList() {
 
   return (
     <ul className="flex flex-wrap gap-15 justify-center pt-10 items-center">
-      {list.map((el) => (
+      {list.map((el, i) => (
         <TrackItem
           key={el.id}
           track={el}
           playing={isPlaying}
           setIsPlaying={setIsPlaying}
+          isLoadedImediatly={i < 3}
         />
       ))}
     </ul>

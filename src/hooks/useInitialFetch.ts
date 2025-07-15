@@ -3,7 +3,7 @@ import { useTracks } from './queries/useTracks';
 
 export const useInitialFetch = () => {
   const { search, artist, genre, sort, order, page } = useGetSearchParams();
-  const { data } = useTracks({
+  const { data, isLoading } = useTracks({
     search,
     artist,
     genre,
@@ -15,6 +15,7 @@ export const useInitialFetch = () => {
 
   return {
     maxPage,
-    data: data?.data
+    data: data?.data,
+    isLoading
   };
 };

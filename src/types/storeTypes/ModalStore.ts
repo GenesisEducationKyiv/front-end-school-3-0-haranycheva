@@ -1,7 +1,7 @@
 import { Track } from "../models";
 import { AudioInfo } from "../repeated";
 
-type ModalType = "create" | "edit" | "file" | "delete" | "deleteMulti" | null;
+type ModalType = "create" | "edit" | "file" | "delete" | "deleteMulti" | "showActive" | null;
 
 export type ModalStore = {
   type: ModalType;
