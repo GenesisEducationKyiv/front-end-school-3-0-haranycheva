@@ -14,14 +14,14 @@ interface TrackItemProps {
   track: Track;
   playing: string | null;
   setIsPlaying: (id: string | null) => void;
-  index: number;
+  isLoadedImediatly: boolean;
 }
 
 export default function TrackItem({
   track,
   playing,
   setIsPlaying,
-  index,
+  isLoadedImediatly,
 }: TrackItemProps) {
   const isPlaying = playing === track.id;
   const [fileSrc, setFileSrc] = useState<string | undefined>(undefined);
@@ -61,8 +61,8 @@ export default function TrackItem({
           width={200}
           height={200}
           quality={75}
-          loading={index < 3 ? 'eager' : 'lazy'} 
-          priority={index < 3}
+          loading={isLoadedImediatly ? 'eager' : 'lazy'} 
+          priority={isLoadedImediatly}
           className="rounded-[5px] block w-[200px] h-[200px]"
         />
         <ul className="child absolute top-1 left-1 flex gap-[2px] max-w-[80%] flex-wrap opacity-0  transition-opacity duration-200">

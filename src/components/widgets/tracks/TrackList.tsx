@@ -42,7 +42,7 @@ export default function TrackList() {
           track={el}
           playing={isPlaying}
           setIsPlaying={setIsPlaying}
-          index={i}
+          isLoadedImediatly={i < 3}
         />
       ))}
     </ul>
