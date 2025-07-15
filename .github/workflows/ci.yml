@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    uses: ./.github/workflows/setup-node.yml
+    with:
+      script: npm run lint
+
+  typecheck:
+    uses: ./.github/workflows/setup-node.yml
+    with:
+      script: npm run typecheck
+
+  build:
+    needs: [lint, typecheck]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: next-build
+          path: |
+            .next
+            public
+            package.json
+            next.config.js
+
+  test:
+    needs: [lint, typecheck]
+    uses: ./.github/workflows/setup-node.yml
+    with:
+      script: npm run test
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: [build, test]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: next-build
+          path: .
+
+      - run: docker build -t my-app:latest .
