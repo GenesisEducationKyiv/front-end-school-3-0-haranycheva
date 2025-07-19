@@ -1,7 +1,7 @@
 'use client';
 
 import useModalStore from '@/store/modalStore';
-import { XCircleIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { isAudioInfo, isStringArray, isTrack, ModalStore } from '@/types';
 import { JSX, useMemo } from 'react';
 import dynamic from 'next/dynamic';
@@ -37,10 +37,10 @@ export default function ModalWrapper() {
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="absolute top-2 right-2 text-xl cursor-pointer"
+          className="p-3 rounded-[20px] absolute top-2 right-2 text-xl cursor-pointer bg-blue-400 shadow-[0px_4px_8px_3px_rgba(0,0,0,0.15),_0px_1px_3px_0px_rgba(0,0,0,0.3)]"
           onClick={closeModal}
         >
-          <XCircleIcon className="h-8 w-8 text-blue-400" />
+          <XMarkIcon className="h-5 w-5 text-white" />
         </button>
 
         {modalType && modalComponents[modalType]?.()}

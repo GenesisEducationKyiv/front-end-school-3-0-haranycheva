@@ -73,7 +73,7 @@ export default function TrackForm({
           )}
         </div>
 
-        {genres.length && (
+        {genres.length > 0 ? (
           <div className="w-full">
             <label className="block sm:text-lg text-sm font-semibold">
               Genres
@@ -110,7 +110,7 @@ export default function TrackForm({
               </p>
             )}
           </div>
-        )}
+        ) : ""}
         <div className="w-full">
           <label className="block sm:text-lg text-sm font-semibold">
             Album

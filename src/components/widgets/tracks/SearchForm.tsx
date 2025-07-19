@@ -92,7 +92,7 @@ const SearchForm = () => {
           {...register('search')}
           type="text"
           placeholder="Search by title"
-          className="border p-2 rounded w-full sm:w-48 focus:outline-none"
+          className="border border-blue-400 p-2 rounded-[4px] w-full sm:w-48 focus:outline-none"
           autoComplete="off"
           data-testid="search-input"
         />
