@@ -1,7 +1,6 @@
 "use client";
 
 import useModalStore from "@/store/modalStore";
-import { AudioInfo, Track } from "@/types";
 import { ActionButton } from "./ActionButton";
 import { Track } from "@/types";
 
