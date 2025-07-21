@@ -29,7 +29,7 @@ export const ActionButton = ({
     <button
       onClick={actionOnClick}
       type="button"
-      className="cursor-pointer p-1 pb-0 bg-blue-500 rounded-[5px]"
+      className="cursor-pointer p-1 bg-blue-500 rounded-[5px]"
       data-testid={`${iconName ?? 'action'}-track-${id}`}
     >
       <IconComponent className="h-5 w-5 text-almond" />

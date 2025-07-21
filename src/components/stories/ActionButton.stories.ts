@@ -12,18 +12,22 @@ const meta: Meta<typeof ActionButton> = {
   argTypes: {
     id: {
       control: false,
-      table: { disable: true },
+      description: 'Id of the card'
     },
-
+    actionOnClick: {
+      description: 'The function that is called when you click on the button',
+      control: false,
+    },
     iconName: {
       control: 'select',
       options: ['none', 'delete', 'edit', 'upload'],
       mapping: {
         none: undefined,
-        Delete: 'delete',
-        Edit: 'edit',
-        Upload: 'upload',
+        delete: 'delete',
+        edit: 'edit',
+        upload: 'upload',
       },
+      description: "Type of icon that is showed"
     },
   },
 };
