@@ -7,25 +7,54 @@ import { JSX, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 
 const TrackForm = dynamic(() => import('../widgets/modals/TrackForm'));
-const UploadFileForm = dynamic(() => import('@/components/widgets/modals/UploadFileForm'));
-const DeleteTrackModal = dynamic(() => import('@/components/widgets/modals/DeleteTrackModal'));
-const MultiDeleteModal = dynamic(() => import('@/components/widgets/modals/MultiDeleteModal'));
+const UploadFileForm = dynamic(
+  () => import('@/components/widgets/modals/UploadFileForm')
+);
+const DeleteTrackModal = dynamic(
+  () => import('@/components/widgets/modals/DeleteTrackModal')
+);
+const MultiDeleteModal = dynamic(
+  () => import('@/components/widgets/modals/MultiDeleteModal')
+);
+const ActiveTrack = dynamic(
+  () => import('@/components/widgets/tracks/ActiveTrack')
+);
 
-type ModalType = "create" | "edit" | "file" | "delete" | "deleteMulti"
+type ModalType =
+  | 'create'
+  | 'edit'
+  | 'file'
+  | 'delete'
+  | 'deleteMulti'
+  | 'showActive';
 
 export default function ModalWrapper() {
   const closeModal = useModalStore((state) => state.closeModal);
   const modalType = useModalStore((state) => state.type);
   const defaults = useModalStore((state) => state.info);
 
-
- const modalComponents: Record<ModalType, (() => JSX.Element | null) | undefined> = useMemo(() => ({
-    create: () => <TrackForm type="create" defaults={null} />,
-    edit: isTrack(defaults) ? () => <TrackForm type="edit" defaults={defaults} /> : undefined,
-    file: isAudioInfo(defaults) ? () => <UploadFileForm defaults={defaults} /> : undefined,
-    delete: isTrack(defaults) ? () => <DeleteTrackModal defaults={defaults} /> : undefined,
-    deleteMulti: isStringArray(defaults) ? () => <MultiDeleteModal defaults={defaults} /> : undefined,
-  }), [defaults]);
+  const modalComponents: Record<
+    ModalType,
+    (() => JSX.Element | null) | undefined
+  > = useMemo(
+    () => ({
+      create: () => <TrackForm type="create" defaults={null} />,
+      edit: isTrack(defaults)
+        ? () => <TrackForm type="edit" defaults={defaults} />
+        : undefined,
+      file: isAudioInfo(defaults)
+        ? () => <UploadFileForm defaults={defaults} />
+        : undefined,
+      delete: isTrack(defaults)
+        ? () => <DeleteTrackModal defaults={defaults} />
+        : undefined,
+      deleteMulti: isStringArray(defaults)
+        ? () => <MultiDeleteModal defaults={defaults} />
+        : undefined,
+      showActive: () => <ActiveTrack />,
+    }),
+    [defaults]
+  );
 
   return modalType ? (
     <div

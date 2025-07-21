@@ -1,20 +1,18 @@
 'use client';
 
 import { getActiveTrack } from '@/api/tracks/getActiveTrack';
-import { Track, TrackData } from '@/types';
+import { Track } from '@/types';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
-const socket = io(process.env.NEXT_PUBLIC_BASE_URL);
-
-export function ActiveTrack() {
+const ActiveTrack = () => {
   const [track, setTrack] = useState<Track | null>(null);
 
   useEffect(() => {
     (async () => {
       const activeTrack = await getActiveTrack();
-      
+
       if (activeTrack) {
         setTrack(activeTrack);
       }
@@ -23,6 +21,10 @@ export function ActiveTrack() {
     const handleActiveTrackUpdate = (data: Track) => {
       setTrack(data);
     };
+
+    const socket = io(process.env.NEXT_PUBLIC_BASE_URL);
+
+    socket.on('activeTrack:updated', handleActiveTrackUpdate);
 
     socket.on('activeTrack:updated', handleActiveTrackUpdate);
 
@@ -40,7 +42,7 @@ export function ActiveTrack() {
         <p className="text-zinc-200 text-2xl">{track.title}</p>
         <p className="text-zinc-400 text-lg">{track.artist}</p>
       </div>
-      <div className='flex gap-[30px]'>
+      <div className="flex gap-[30px]">
         <ul className=" flex gap-[2px] max-w-[80%] flex-wrap ">
           {track.genres.map((el) => (
             <li
@@ -52,9 +54,8 @@ export function ActiveTrack() {
           ))}
         </ul>
         <Image
-          src={track.coverImage || '/no-image.jpg'}
-          placeholder="blur"
-          blurDataURL={track.coverImage || '/no-image.jpg'}
+          src={track.coverImage || '/no-image.webp'}
+          placeholder="empty"
           alt="Track cover"
           width={100}
           height={100}
@@ -63,4 +64,6 @@ export function ActiveTrack() {
       </div>
     </div>
   );
-}
+};
+
+export default ActiveTrack;

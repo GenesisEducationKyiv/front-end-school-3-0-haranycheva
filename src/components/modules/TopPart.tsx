@@ -1,5 +1,6 @@
 import { textClass } from "@/style/classes/text";
 import AddTrackBtn from "../ui/AddTrackBtn";
+import { SeeActiveTrackBtn } from "../ui/SeeActiveTrackBtn";
 export default function TopPart() {
   return (
     <div
@@ -12,7 +13,10 @@ export default function TopPart() {
         ♫ Your music tracks manager
       </h1>
 
-      <AddTrackBtn />
+      <div className="flex gap-[20px]"> 
+        <AddTrackBtn />
+        <SeeActiveTrackBtn/>
+      </div>
     </div>
   );
 }
