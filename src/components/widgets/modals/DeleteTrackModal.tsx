@@ -6,6 +6,7 @@ import useModalStore from "@/store/modalStore";
 
 import { Track } from "@/types";
 import { useDeleteTrack } from "@/hooks/queries/useDeleteTrack";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 type DeleteTrackModalProps = {
   defaults: Track
@@ -25,32 +26,9 @@ export default function DeleteTrackModal({ defaults } : DeleteTrackModalProps) {
   };
 
   return (
-    <div data-testid="confirm-dialog">
-      <h3 className={`${textClass}`}>
-        Are you sure that you wanna delete this track?
-      </h3>
-      <ul className="flex mt-15 gap-10">
-        <li>
-          <button
-            className={`${buttonClass}`}
-            onClick={handleDelete}
-            type="button"
-            data-testid="confirm-delete"
-          >
-            Delete
-          </button>
-        </li>
-        <li>
-          <button
-            className={`${buttonClass}`}
-            onClick={closeModal}
-            type="button"
-            data-testid="cancel-delete"
-          >
-            Cancel
-          </button>
-        </li>
-      </ul>
-    </div>
+    <ConfirmDialog
+      aprovedFn={handleDelete}
+      question="Are you sure that you wanna delete this track?"
+    />
   );
 }

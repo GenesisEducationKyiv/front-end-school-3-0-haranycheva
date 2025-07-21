@@ -1,12 +1,8 @@
 "use client";
 
 import useModalStore from "@/store/modalStore";
+import { ActionButton } from "./ActionButton";
 import { Track } from "@/types";
-import {
-  ArrowUpTrayIcon,
-  TrashIcon,
-  PencilSquareIcon,
-} from "@heroicons/react/24/outline";
 
 type ButtonListProps = {
   track: Track;
@@ -29,36 +25,15 @@ export default function ButtonList({ track, audioFile } : ButtonListProps) {
   };
 
   return (
-    <ul className="list-none flex justify-end">
+    <ul className="list-none flex justify-end gap-1">
       <li>
-        <button
-          onClick={handleFileInteraction}
-          type="button"
-          className="cursor-pointer p-1 pb-0"
-          data-testid={`upload-track-${track.id}`}
-        >
-          <ArrowUpTrayIcon className="h-5 w-5 text-almond" />
-        </button>
+        <ActionButton iconName="upload" actionOnClick={handleFileInteraction} id={track.id}/>
       </li>
       <li>
-        <button
-          onClick={handleDelete}
-          type="button"
-          className="cursor-pointer p-1 pb-0"
-          data-testid={`delete-track-${track.id}`}
-        >
-          <TrashIcon className="h-5 w-5 text-almond" />
-        </button>
+        <ActionButton iconName="delete" actionOnClick={handleDelete} id={track.id}/>
       </li>
       <li>
-        <button
-          onClick={handleEdit}
-          type="button"
-          className="cursor-pointer p-1"
-          data-testid={`edit-track-${track.id}`}
-        >
-          <PencilSquareIcon className="h-5 w-5 text-almond" />
-        </button>
+        <ActionButton iconName="edit" actionOnClick={handleEdit} id={track.id}/>
       </li>
     </ul>
   );

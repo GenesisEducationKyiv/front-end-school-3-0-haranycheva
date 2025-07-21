@@ -31,3 +31,5 @@ In the project directory, you can run:
 `npm run e2e`- runs end-to-end tests using Playwright.
 
 `npm run analyze` - builds the project with bundle analysis enabled.
+
+`npm run storybook` - runs storybook and shows docs.
